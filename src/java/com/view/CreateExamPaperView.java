@@ -73,6 +73,26 @@ public class CreateExamPaperView implements Serializable {
     private int marksForD;
     private List<SubjectTags> subjectTags;
     private List<Integer> seletedSubjectTag;
+    private Date startTime;
+    private Date endTime;
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+   
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
 
     public List<SubjectTags> getSubjectTags() {
         return subjectTags;
@@ -565,19 +585,33 @@ public class CreateExamPaperView implements Serializable {
         Date examDate = new java.sql.Date(exameDateTime.getTime());
         examPaper.setExamDate((java.sql.Date) examDate);
         Time examDuration = new Time(examPaper.getExamDate().getTime());
-       
-        Calendar c=Calendar.getInstance();
+
+        Calendar c = Calendar.getInstance();
         c.setTime(examDate);
-        System.out.println("TINsE:"+c.getTimeInMillis());
-        
-        DateFormat format=new SimpleDateFormat("HH");
-        String dateF=format.format(examDate);
-        System.out.println("TTT:"+new Integer(dateF));
-        
-        
+        System.out.println("TINsE:" + c.getTimeInMillis());
+
+        DateFormat format = new SimpleDateFormat("HH");
+        String dateF = format.format(examDate);
+        System.out.println("TTT:" + new Integer(dateF));
+
         examPaper.setExamDuration(examDuration);
         examPaper.setModuleCode(selectedModule.getModuleId());
 
+        
+        
+        Date newstartDate = new java.sql.Date(startTime.getTime());
+        Time newstTime=new Time(newstartDate.getTime());
+         examPaper.setStartTime(newstTime);
+         
+         Date newendDate = new java.sql.Date(endTime.getTime());
+        Time newenTime=new Time(endTime.getTime());
+         examPaper.setEndTime(newenTime);
+        
+
+        
+        
+        
+        
         List<Section> allSections = new ArrayList<Section>();
         if (SectionAQuestion.size() > 0) {
             Section sectionA = new Section();
@@ -630,26 +664,24 @@ public class CreateExamPaperView implements Serializable {
         } else if (section.trim().equalsIgnoreCase("B")) {
             SectionBQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
 
-        }else if (section.trim().equalsIgnoreCase("C")) {
-            
+        } else if (section.trim().equalsIgnoreCase("C")) {
+
             SectionCQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
 
-        }else if (section.trim().equalsIgnoreCase("D")) {
-           
+        } else if (section.trim().equalsIgnoreCase("D")) {
+
             SectionDQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
 
-           SectionAQuestion=questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag,marks);
-        }else if(section.trim().equalsIgnoreCase("B")){     
-           
-           SectionBQuestion=questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag,marks);
-        }
-        else if(section.trim().equalsIgnoreCase("C")){     
-           
-           SectionCQuestion=questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag,marks);
-        }
-        else if(section.trim().equalsIgnoreCase("D")){     
-           
-           SectionDQuestion=questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag,marks);
+            SectionAQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
+        } else if (section.trim().equalsIgnoreCase("B")) {
+
+            SectionBQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
+        } else if (section.trim().equalsIgnoreCase("C")) {
+
+            SectionCQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
+        } else if (section.trim().equalsIgnoreCase("D")) {
+
+            SectionDQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
         }
     }
 

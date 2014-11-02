@@ -19,7 +19,10 @@
                 User Info Not available
             </ui:define>
             <ui:define name="right">
-                No active Session
+               <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
+                            <h:outputLabel value="#{userSessionBean.userName}" />
+                            <h:commandButton value="Logout" /> 
+                        </h:panelGrid>
             </ui:define>
             <ui:define name="content">
 

@@ -54,7 +54,7 @@
                                             </p:commandButton>
                                             <p:commandButton value="Delete selected question" actionListener="#{createExamPaperView.deleteQuestionSectionA()}" update="@form">
                                             </p:commandButton>
-                                            
+
                                             <p:panelGrid columns="2">
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForA}" binding="#{marksA}"/>
@@ -119,8 +119,7 @@
                                             </p:commandButton>
                                             <p:commandButton value="Delete selected question" actionListener="#{createExamPaperView.deleteQuestionSectionB()}" update="@form">
                                             </p:commandButton>
-                                            
-                                            
+
                                             <p:panelGrid columns="2">
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForB}" binding="#{marksB}"/>
@@ -131,8 +130,7 @@
                                                 <p:commandButton value="Generate Questions for Section B" action="#{createExamPaperView.generateAutomaticQuestion('B', marksB.value)}" update="@form">
                                                 </p:commandButton>
                                             </p:panelGrid>
-                                            
-                                            
+
                                             <p:dataTable paginator="true" rows="5" value="#{createExamPaperView.sectionBQuestion}" var="question" id="sectionBdatatable"> 
                                                 <f:facet name="header">
                                                     List of Selected Questions
@@ -185,8 +183,7 @@
                                             </p:commandButton>
                                             <p:commandButton value="Delete selected question" actionListener="#{createExamPaperView.deleteQuestionSectionC()}" update="@form">
                                             </p:commandButton>
-                                            
-                                            
+
                                             <p:panelGrid columns="2">
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForC}" binding="#{marksC}"/>
@@ -197,8 +194,7 @@
                                                 <p:commandButton value="Generate Questions for Section C" action="#{createExamPaperView.generateAutomaticQuestion('C', marksC.value)}" update="@form">
                                                 </p:commandButton>
                                             </p:panelGrid>
-                                            
-                                            
+
                                             <p:dataTable paginator="true" rows="5" value="#{createExamPaperView.sectionCQuestion}" var="question" id="sectionCdatatable"> 
                                                 <f:facet name="header">
                                                     List of Selected Questions
@@ -251,8 +247,7 @@
                                             </p:commandButton>
                                             <p:commandButton value="Delete selected question" actionListener="#{createExamPaperView.deleteQuestionSectionD()}" update="@form">
                                             </p:commandButton>
-                                            
-                                            
+
                                             <p:panelGrid columns="2">
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForD}" binding="#{marksD}"/>
@@ -263,7 +258,7 @@
                                                 <p:commandButton value="Generate Questions for Section D" action="#{createExamPaperView.generateAutomaticQuestion('D', marksD.value)}" update="@form">
                                                 </p:commandButton>
                                             </p:panelGrid>
-                                            
+
                                             <p:dataTable paginator="true" rows="5" value="#{createExamPaperView.sectionDQuestion}" var="question" id="sectionDdatatable"> 
                                                 <f:facet name="header">
                                                     List of Selected Questions
@@ -324,6 +319,15 @@
 
                     <p:outputLabel value="Select Exam Date and Duration"/>
                     <p:calendar value="#{createExamPaperView.exameDateTime}" pattern="MM/dd/yyyy HH:mm" />
+
+
+
+                    <p:outputLabel value="Start Time"/>
+                    <p:calendar value="#{createExamPaperView.startTime}" pattern="HH:mm" />
+
+                    <p:outputLabel value="End Time"/>
+                    <p:calendar value="#{createExamPaperView.endTime}" pattern="HH:mm" />
+
 
                     <p:commandButton type="button" onclick="PF('cd').show()" value="Create Exam"/>
                     <p:confirmDialog message="Are you sure about Create Exam Paper?"

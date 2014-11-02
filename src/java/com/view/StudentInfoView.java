@@ -5,8 +5,11 @@
  */
 package com.view;
 
+import com.business.ExamPaperEjb;
 import com.business.ModuleEjb;
 import com.business.StudentEjb;
+import com.entities.ExamPaper;
+import com.entities.Question;
 import com.entities.Student;
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -28,6 +31,7 @@ public class StudentInfoView implements Serializable{
     @Inject  private UserSessionBean userSessionBean;
     @Inject StudentEjb studentEjb;
     @Inject ModuleEjb moduleEjb;
+    @Inject ExamPaperEjb examPaperEjb;
 
     public Student getStudent() {
         return student;
@@ -58,6 +62,15 @@ public class StudentInfoView implements Serializable{
         return moduleEjb.moduleNameforModuleId(moduleId);
     }
     
+    
+    
+    public String startExamWithId(int examId)
+    {
+        ExamPaper examPaper=examPaperEjb.startExamWithId(examId);
+        System.out.println("EXAM Paper:"+examPaper.toString());
+
+        return "e.xhtml";
+    }
     
     
 }

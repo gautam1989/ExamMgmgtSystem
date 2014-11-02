@@ -37,4 +37,12 @@ public class ExamPaperEjb {
         ExamPaper emp=em.find(ExamPaper.class, 1);
         System.out.println("emp"+emp);
     }
+    
+    
+    
+    public ExamPaper startExamWithId(int examPaperId)
+    {
+        ExamPaper emp=em.find(ExamPaper.class, examPaperId);
+        return emp;
+    }
 }

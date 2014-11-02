@@ -83,4 +83,19 @@ public class UserSessionBean implements Serializable {
         return ("Login.xhtml");
     }
 
+    
+    
+    
+    public String logout()
+    {
+        try{
+            System.out.println("logout");
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpServletRequest req = (HttpServletRequest) fc.getExternalContext().getRequest();
+        req.logout();
+        return "/faces/Login.xhtml";
+        }catch(Exception e){
+            return "./Login.xtml";
+        }
+    }
 }

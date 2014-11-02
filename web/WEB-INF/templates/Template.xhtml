@@ -35,27 +35,29 @@
             <div id="left" style="padding-right: 10px">
                 <ui:insert name="left">Left</ui:insert>
                 <h:form>
-                <p:menu>
-                    
-                    <p:menuitem value="Create Exam paper" url="CreateExamPaper.xhtml" rendered="#{request.isUserInRole('lecturer')}"/>
-                    <p:menuitem value="Add/Update Questions"  rendered="#{request.isUserInRole('lecturer')}"/>
-                    <p:menuitem value="Invigilate Exams" url="invigilateExams.xhtml" rendered="#{request.isUserInRole('lecturer')}" />
-                    <p:menuitem value="Exam Start" rendered="#{request.isUserInRole('student')}" />
-                </p:menu>
-                    </h:form>
+                    <p:menu>
+
+                        <p:menuitem value="Create Exam paper" url="CreateExamPaper.xhtml" rendered="#{request.isUserInRole('lecturer')}"/>
+                        <p:menuitem value="Add/Update Questions"  rendered="#{request.isUserInRole('lecturer')}"/>
+                        <p:menuitem value="Invigilate Exams" url="invigilateExams.xhtml" rendered="#{request.isUserInRole('lecturer')}" />
+                        <p:menuitem value="Exam Start" rendered="#{request.isUserInRole('student')}" />
+                    </p:menu>
+                </h:form>
             </div>
             <div>
                 <div id="right">
-                    <ui:insert name="right">Right</ui:insert>
+                    <ui:insert name="right">
+                      
+                    </ui:insert>
                 </div>
                 <div id="content" class="right_content">
                     <ui:insert name="content">Content</ui:insert>
                 </div>
             </div>
         </div>
-<!--        <div id="bottom" style="font-size: 25px">
-            <ui:insert name="bottom">For any problem contact - 84546151</ui:insert>
-        </div>-->
+        <!--        <div id="bottom" style="font-size: 25px">
+                    <ui:insert name="bottom">For any problem contact - 84546151</ui:insert>
+                </div>-->
 
     </h:body>
 

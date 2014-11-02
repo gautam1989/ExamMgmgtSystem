@@ -64,7 +64,7 @@
                             </p:column>
 
                             <p:column headerText="Action">
-                                <p:commandButton value="Start Examination" id="nonAjax" ajax="false" />
+                                <p:commandButton value="Start Examination" id="nonAjax" ajax="false" action="${studentInfoView.startExamWithId(exam.examPaperId)}" />
                             </p:column>
                         </p:dataTable>
                     </p:fieldset>

@@ -5,8 +5,13 @@
  */
 package com.view;
 
+import com.business.StudentEjb;
 import com.entities.Admin;
+import com.entities.Student;
+import java.io.IOException;
 import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -28,6 +33,9 @@ public class UserSessionBean implements Serializable {
     
     @Inject StudentInfoView studentInfoView;
 
+    @Inject
+    StudentEjb studentEjb;
+    
     public String getPassword() {
         return password;
     }
@@ -60,6 +68,7 @@ public class UserSessionBean implements Serializable {
         try {
             req.login(UserName, password);
             
+            
             //studentInfoView.getStudent().setUserName(UserName);
             //studentInfoView.fillStudentInfo();
         } catch (ServletException ex) {
@@ -70,9 +79,21 @@ public class UserSessionBean implements Serializable {
 
         if (FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin")) {
             this.role="admin";
-            return "/faces/admin/protected.xhtml?faces-redirect=true";
+            return "/faces/admin/AdminMainPage.xhtml?faces-redirect=true";
         }else if(FacesContext.getCurrentInstance().getExternalContext().isUserInRole("student")){
+            
             System.out.println(">>>in student");
+            Student student=studentEjb.findStudent(UserName);
+            System.out.println("FL:"+student.getFirstLogin());
+        if (student.getFirstLogin() == 0) {
+            String uri = "/faces/student/changePassword.xhtml?faces-redirect=true";
+            try {
+               return (uri);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+            
             return "/faces/student/student.xhtml?faces-redirect=true";
         }else if(FacesContext.getCurrentInstance().getExternalContext().isUserInRole("lecturer")){
             System.out.println(">>>in lecturer");

@@ -10,6 +10,11 @@ import com.entities.Question_;
 import com.entities.Student;
 import com.entities.SubjectTags;
 import com.entities.Admin;
+import com.entities.Modules;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.List;
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -26,15 +31,77 @@ public class StudentEjb {
     
     @PersistenceContext EntityManager em;
     
-    public  void saveStudent(Student student)
+    
+    
+    private static final String queryString=("select m from Modules m");
+  
+    public List<Modules> loadModules()
     {
+                
+      TypedQuery<Modules> query = em.createQuery(queryString,Modules.class);
+        System.out.println(query.getResultList().get(0).getModuleName());
+    return(query.getResultList());
+        
+      
+    }
+    
+    public  void saveStudent(Student student)
+    {      
+        
+         try{
+           //  System.out.println(student.getModulesEnrolled());
+             System.out.println("uer name: "+student.getUserName());
+             
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            String text = "password";
+            md.update(text.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+            byte[] digest = md.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            String output = bigInt.toString(16);
 
-      //  System.out.println("<<<<"+student.getName());
-      //  
+            System.out.println(output);
+
+             
+             student.setPassword(output);
+             
+        em.merge(student);
+        
+        }catch(Exception e){e.printStackTrace();}
+    }
+    
+    
+    public void saveStudentAfterPasswordChange(Student student)
+    {
         try{
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+            
+            md.update(student.getPassword().getBytes("UTF-8")); // Change this to "UTF-16" if needed
+            byte[] digest = md.digest();
+            BigInteger bigInt = new BigInteger(1, digest);
+            String output = bigInt.toString(16);
+            student.setPassword(output);
         em.merge(student);
         }catch(Exception e){e.printStackTrace();}
     }
+    
+    
+    
+    public List<Modules>  findModules(List<Integer> selectedModules) {
+          List idList = new ArrayList();
+        for (int i = 0; i < selectedModules.size(); i++) {
+
+                idList.add(selectedModules.get(i));
+            }
+        
+        System.out.println(idList);
+        TypedQuery<Modules> selectedModulesNames =em.createQuery("Select m from Modules m where m.moduleId In :ModuleId ",Modules.class );
+        selectedModulesNames.setParameter("ModuleId",idList);
+        System.out.println("size<<<<<" +selectedModulesNames.getResultList().size());
+        List<Modules> selectModules= new ArrayList<Modules>();
+        selectModules=selectedModulesNames.getResultList();
+          return    selectModules; 
+    }
+    
     
     
     public Student findStudent(String userName)

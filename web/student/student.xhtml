@@ -19,7 +19,12 @@
 
             </ui:define>
             <ui:define name="right">
-                No active Session
+               <h:form>
+                            <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
+                                <h:outputLabel value="#{userSessionBean.userName}" />
+                                <h:commandButton value="Logout" action="#{userSessionBean.logout()}" /> 
+                            </h:panelGrid>       
+                        </h:form>
             </ui:define>
             <ui:define name="content">
 

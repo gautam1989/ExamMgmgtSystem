@@ -39,19 +39,23 @@
 
                         <p:menuitem value="Create Exam paper" url="CreateExamPaper.xhtml" rendered="#{request.isUserInRole('lecturer')}"/>
                         <p:menuitem value="Add/Update Questions"  rendered="#{request.isUserInRole('lecturer')}"/>
-                        <p:menuitem value="Invigilate Exams" url="invigilateExams.xhtml" rendered="#{request.isUserInRole('lecturer')}" />
+                        <p:menuitem value="Invigilate Exams" url="invigilateExams.xhtml" rendered="#{(request.isUserInRole('lecturer'))or(request.isUserInRole('admin')) }" />
                         <p:menuitem value="Exam Start" rendered="#{request.isUserInRole('student')}" />
+                        <p:menuitem value="Student upload" rendered="#{request.isUserInRole('admin')}" url="studentInfoUpload.xhtml" />
+                        <p:menuitem value="lecturer upload" rendered="#{request.isUserInRole('admin')}" url="lecturerinfo.xhtml"/>
+
                     </p:menu>
                 </h:form>
             </div>
             <div>
                 <div id="right">
                     <ui:insert name="right">
-                      
+                        
                     </ui:insert>
                 </div>
                 <div id="content" class="right_content">
                     <ui:insert name="content">Content</ui:insert>
+
                 </div>
             </div>
         </div>

@@ -6,7 +6,19 @@
 package com.business;
 
 import com.entities.ExamPaper;
+import com.entities.Question;
+import com.entities.Section;
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Resource;
+import javax.ejb.Schedule;
 import javax.ejb.Stateful;
+import javax.ejb.Stateless;
+import javax.ejb.Timeout;
+import javax.ejb.TimerService;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -14,11 +26,24 @@ import javax.persistence.PersistenceContext;
  *
  * @author gautamverma
  */
-@Stateful
+@Stateless
 public class ExamPaperEjb {
  
     @PersistenceContext
     EntityManager em;
+    
+    @Resource TimerService timerService;
+    private int timeRemaining;
+    
+    Timer timer;
+
+    public TimerService getTimerService() {
+        return timerService;
+    }
+
+    public void setTimerService(TimerService timerService) {
+        this.timerService = timerService;
+    }
     
     public boolean saveExamPaper(ExamPaper examPaper)
     {
@@ -35,7 +60,6 @@ public class ExamPaperEjb {
     public void getExampaper()
     {
         ExamPaper emp=em.find(ExamPaper.class, 1);
-        System.out.println("emp"+emp);
     }
     
     
@@ -43,6 +67,44 @@ public class ExamPaperEjb {
     public ExamPaper startExamWithId(int examPaperId)
     {
         ExamPaper emp=em.find(ExamPaper.class, examPaperId);
+        
+        Calendar cal=Calendar.getInstance();
+        cal.setTime(emp.getExamDate());
+        cal.add(cal.DATE, 1);
         return emp;
     }
+    
+    @Timeout
+    public void decreaseCount()
+    {
+        System.out.println("Yo");
+        
+        
+       timer.scheduleAtFixedRate(new TimerTask() {
+
+            @Override
+            public void run() {
+                System.out.println("i"); //To change body of generated methods, choose Tools | Templates.
+            }
+        }, 1000, 1000);
+        
+        
+    }
+    
+//    @Schedule(second="*", minute="*",hour="*", persistent=false)
+//    public void decreaseTime()
+//    {
+//        System.out.println("Dec");
+//    }
+//    
+    
+    public void saveSection(Section section){
+
+        em.merge(section);
+    }
+    
+    public void saveQuestion(Question q){
+        em.merge(q);
+    }
+    
 }

@@ -32,7 +32,32 @@ public class UserControl {
     @Resource
     UserTransaction userTransaction;
 
-    public boolean passwordChange(Student student) {
+    public boolean saveStudent(Student student) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost/ExamMgmtSystem?"
+                    + "user=root&password=root");
+
+            statement = connect.createStatement();
+
+            
+            preparedStatement = connect
+                    .prepareStatement("insert into users(userid,password) values(?,?)");
+
+            preparedStatement.setString(2, student.getPassword());
+            preparedStatement.setString(1, student.getUserName());
+
+            preparedStatement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    
+}
+
+public boolean passwordChange(Student student) {
         try {
 
           

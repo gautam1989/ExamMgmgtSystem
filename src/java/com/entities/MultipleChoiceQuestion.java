@@ -8,6 +8,7 @@ package com.entities;
 import java.util.List;
 import java.util.Map;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
 /**
  *
@@ -16,7 +17,38 @@ import javax.persistence.Entity;
 @Entity
 public class MultipleChoiceQuestion extends Question{
     
+    
     private List<String>options;
     private boolean isMultiple;
+    @ManyToOne
+    private MultiPart multiPart;
+    public void setOptions(List<String> options) {
+        this.options = options;
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
+
+
+    public boolean isIsMultiple() {
+        return isMultiple;
+    }
+
+    public void setIsMultiple(boolean isMultiple) {
+        this.isMultiple = isMultiple;
+    }
+
+    public MultiPart getMultiPart() {
+        return multiPart;
+    }
+
+    public void setMultiPart(MultiPart multiPart) {
+        this.multiPart = multiPart;
+    }
+
+    
+    
+    
     
 }

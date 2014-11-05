@@ -5,10 +5,12 @@
  */
 package com.entities;
 
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.TableGenerator;
 
@@ -25,6 +27,17 @@ public class SubjectTags {
     private int subjectTagId;
     private String subjectTagname;
 
+    @ManyToMany
+    private List<Question> question;
+
+    public List<Question> getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(List<Question> question) {
+        this.question = question;
+    }
+    
     public int getSubjectTagId() {
         return subjectTagId;
     }
@@ -40,5 +53,6 @@ public class SubjectTags {
     public void setSubjectTagname(String subjectTagname) {
         this.subjectTagname = subjectTagname;
     }
+   
     
 }

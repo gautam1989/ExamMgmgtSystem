@@ -8,6 +8,7 @@ package com.entities;
 import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -32,12 +33,26 @@ public class ExamPaper {
     private Date createdDate;
     private Date examDate;
     private int moduleCode;
-    @OneToMany
+    @OneToMany(mappedBy = "examPaper",cascade = CascadeType.PERSIST)
     private List<Section> sections;
     private Time examDuration;
     private Time startTime;
     private Time endTime;
+    
+    
+    @OneToMany(mappedBy = "examPaper",cascade = CascadeType.PERSIST)
+    private List<ExamSession> examSession;
+    
+    @ManyToOne
+    private Modules modules;
 
+    public Modules getModules() {
+        return modules;
+    }
+
+    public void setModules(Modules modules) {
+        this.modules = modules;
+    }
     private int completed;
 
     public Time getStartTime() {
@@ -111,9 +126,9 @@ public class ExamPaper {
         this.sections = sections;
     }
 
-    @Override
-    public String toString() {
-        return this.createdDate + " " + this.examDate + " " + this.examDuration + " " + this.examPaperId + " " + this.moduleCode + " " + this.sections.size();
-    }
+//    @Override
+//    public String toString() {
+//        return this.createdDate + " " + this.examDate + " " + this.examDuration + " " + this.examPaperId + " " + this.moduleCode + " " + this.sections.size();
+//    }
 
 }

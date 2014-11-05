@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
 
 /**
@@ -22,9 +23,27 @@ public class PdfAnswers {
     @TableGenerator(name="PDFANSWERS", table="SEQUENCE_TABLE", pkColumnName="SEQ_NAME",
         valueColumnName="SEQ_COUNT", pkColumnValue="PDFANSWERS_SEQ",allocationSize = 1)
     @GeneratedValue(strategy=GenerationType.TABLE, generator="PDFANSWERS")
+    
     @Id
-    private Student studentId;
-    private Map<Question,String> questionAndAnswer;
+    private ExamSession examSession;
+    
+    private Map<String,List<String>> questionAndAnswer;
+
+    public ExamSession getExamSession() {
+        return examSession;
+    }
+
+    public void setExamSession(ExamSession examSession) {
+        this.examSession = examSession;
+    }
+
+    public Map<String, List<String>> getQuestionAndAnswer() {
+        return questionAndAnswer;
+    }
+
+    public void setQuestionAndAnswer(Map<String, List<String>> questionAndAnswer) {
+        this.questionAndAnswer = questionAndAnswer;
+    }
    
     
 }

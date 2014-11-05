@@ -25,8 +25,8 @@
 
                 <p:row>
                     <p:column colspan="2">
-                        <p:dataTable id="dataTable" value="#{createExamPaperView.questionBank.module.questionBank.questions}" var="question" paginator="true" rows="5">
-                            <p:column colspan="2" rendered="#{question['class'].simpleName==createExamPaperView.questionBank.selectedQuestionType }"> <h:commandButton value="Add" action="#{createExamPaperView.addSelectedQuestionSectionA(question)}"></h:commandButton>  #{question.questionText}</p:column>
+                        <p:dataTable id="dataTable" value="#{createExamPaperView.tryList}" var="question" paginator="true" rows="5">
+                            <p:column colspan="2" > <h:commandButton value="Add" action="#{createExamPaperView.addSelectedQuestionSectionA(question)}"></h:commandButton>  #{question.questionText}</p:column>
                         </p:dataTable>
                     </p:column>
                 </p:row>

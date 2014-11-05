@@ -10,7 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
 
 /**
@@ -25,8 +27,16 @@ public class Section {
     @Id
     private int sectionId;
     private String name;
+    private int totMarks;
+    private String sectionType;
+   
+    @ManyToMany
     List<Question> questions;
     private int sectionMarks;
+    
+   
+    @ManyToOne
+    private ExamPaper examPaper;
 
     public int getSectionId() {
         return sectionId;
@@ -44,7 +54,22 @@ public class Section {
         this.name = name;
     }
 
-    
+    public int getTotMarks() {
+        return totMarks;
+    }
+
+    public void setTotMarks(int totMarks) {
+        this.totMarks = totMarks;
+    }
+
+    public String getSectionType() {
+        return sectionType;
+    }
+
+    public void setSectionType(String sectionType) {
+        this.sectionType = sectionType;
+    }
+
     public List<Question> getQuestions() {
         return questions;
     }
@@ -60,7 +85,12 @@ public class Section {
     public void setSectionMarks(int sectionMarks) {
         this.sectionMarks = sectionMarks;
     }
-    
-   
-    
+
+    public ExamPaper getExamPaper() {
+        return examPaper;
+    }
+
+    public void setExamPaper(ExamPaper examPaper) {
+        this.examPaper = examPaper;
+    }
 }

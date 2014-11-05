@@ -59,7 +59,7 @@
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForA}" binding="#{marksA}"/>
                                                 <p:outputLabel value="Select Subject tags"/>
-                                                <h:selectManyListbox value="#{createExamPaperView.seletedSubjectTag}">
+                                                <h:selectManyListbox value="#{createExamPaperView.selectedSubjectTagValA}">
                                                     <f:selectItems value="#{createExamPaperView.subjectTags}" var="subjectTags" itemLabel="#{subjectTags.subjectTagname}" itemValue="#{subjectTags.subjectTagId}"/>
                                                 </h:selectManyListbox>
                                                 <p:commandButton value="Generate Questions for Section A" action="#{createExamPaperView.generateAutomaticQuestion('A', marksA.value)}" update="@form">
@@ -124,7 +124,7 @@
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForB}" binding="#{marksB}"/>
                                                 <p:outputLabel value="Select Subject tags"/>
-                                                <h:selectManyListbox value="#{createExamPaperView.seletedSubjectTag}">
+                                                <h:selectManyListbox value="#{createExamPaperView.selectedSubjectTagValB}">
                                                     <f:selectItems value="#{createExamPaperView.subjectTags}" var="subjectTags" itemLabel="#{subjectTags.subjectTagname}" itemValue="#{subjectTags.subjectTagId}"/>
                                                 </h:selectManyListbox>
                                                 <p:commandButton value="Generate Questions for Section B" action="#{createExamPaperView.generateAutomaticQuestion('B', marksB.value)}" update="@form">
@@ -177,7 +177,7 @@
                                                 </p:column>
                                             </p:dataTable>
                                         </p:tab>
-                                        <p:tab title="Section C  - Click to select Questions MARKS - ${createExamPaperView.retrieveMarksForSectionC()}">
+                                        <p:tab title="Section C - Click to select Questions MARKS - ${createExamPaperView.retrieveMarksForSectionC()}">
                                             <p:commandButton value="Add a question" actionListener="#{createExamPaperView.addQuestionSectionC()}">
                                                 <p:ajax event="dialogReturn" listener="#{createExamPaperView.onModuleChosen(event)}"  update="@form" />
                                             </p:commandButton>
@@ -188,7 +188,7 @@
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForC}" binding="#{marksC}"/>
                                                 <p:outputLabel value="Select Subject tags"/>
-                                                <h:selectManyListbox value="#{createExamPaperView.seletedSubjectTag}">
+                                                <h:selectManyListbox value="#{createExamPaperView.selectedSubjectTagValC}">
                                                     <f:selectItems value="#{createExamPaperView.subjectTags}" var="subjectTags" itemLabel="#{subjectTags.subjectTagname}" itemValue="#{subjectTags.subjectTagId}"/>
                                                 </h:selectManyListbox>
                                                 <p:commandButton value="Generate Questions for Section C" action="#{createExamPaperView.generateAutomaticQuestion('C', marksC.value)}" update="@form">
@@ -252,7 +252,7 @@
                                                 <p:outputLabel value="Enter marks for section"/>
                                                 <p:inputText value="#{createExamPaperView.marksForD}" binding="#{marksD}"/>
                                                 <p:outputLabel value="Select Subject tags"/>
-                                                <h:selectManyListbox value="#{createExamPaperView.seletedSubjectTag}">
+                                                <h:selectManyListbox value="#{createExamPaperView.selectedSubjectTagValD}">
                                                     <f:selectItems value="#{createExamPaperView.subjectTags}" var="subjectTags" itemLabel="#{subjectTags.subjectTagname}" itemValue="#{subjectTags.subjectTagId}"/>
                                                 </h:selectManyListbox>
                                                 <p:commandButton value="Generate Questions for Section D" action="#{createExamPaperView.generateAutomaticQuestion('D', marksD.value)}" update="@form">

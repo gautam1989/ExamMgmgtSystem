@@ -19,27 +19,18 @@
 
             </ui:define>
             <ui:define name="right">
-               <h:form>
-                            <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
-                                <h:outputLabel value="#{userSessionBean.userName}" />
-                                <h:commandButton value="Logout" action="#{userSessionBean.logout()}" /> 
-                            </h:panelGrid>       
-                        </h:form>
+                <h:form>
+                    <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
+                        <h:outputLabel value="#{userSessionBean.userName}" />
+                        <h:commandButton value="Logout" action="#{userSessionBean.logout()}" /> 
+                    </h:panelGrid>       
+                </h:form>
             </ui:define>
             <ui:define name="content">
 
                 <h:form>
 
-                    <p:menubar>
-                        <p:menuitem value="Home" url="#" icon="ui-icon-home" />
-                        <p:menuitem value="Profile" url="#" icon="ui-icon-person" />
-                        <p:menuitem value="Exam Enroll" url="#" icon="ui-icon-clipboard" />
-                        <f:facet name="options">
-                            <p:inputText style="margin-right:10px" placeholder="Search"/>
-                            <p:commandButton type="button" value="Logout" icon="ui-icon-extlink" />
-                        </f:facet>
-                    </p:menubar>
-                    <br/>
+
                     <p:fieldset legend="Student Information">
                         <h:panelGrid columns="2" cellpadding="5">
                             <p:outputLabel value="Student Id :" /> 
@@ -55,11 +46,11 @@
                                 <h:outputText value="#{exam.examPaperId}" />
                             </p:column>
 
-                             <p:column headerText="Exam Name">
-                                 <h:outputText value="#{studentInfoView.moduleNameforModuleId(exam.moduleCode)}" />
+                            <p:column headerText="Exam Name">
+                                <h:outputText value="#{studentInfoView.moduleNameforModuleId(exam.moduleCode)}" />
                             </p:column>
 
-                            
+
                             <p:column headerText="Date">
                                 <h:outputText value="#{exam.examDate}" />
                             </p:column>

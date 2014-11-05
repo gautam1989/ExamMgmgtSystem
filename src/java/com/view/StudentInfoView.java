@@ -93,7 +93,7 @@ public class StudentInfoView implements Serializable {
     public String startExamWithId(int examId) {
         ExamPaper examPaper = examPaperEjb.startExamWithId(examId);
         System.out.println("EXAM Paper:" + examPaper.toString());
-
+        
         return "exam.xhtml";
     }
 
@@ -124,5 +124,9 @@ public class StudentInfoView implements Serializable {
             return "/faces/error.xhtml";
         }
     }
+    
+    
+    
+    
 
 }

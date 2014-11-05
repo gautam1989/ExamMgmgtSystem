@@ -71,8 +71,9 @@ public class UserSessionBean implements Serializable {
             
             //studentInfoView.getStudent().setUserName(UserName);
             //studentInfoView.fillStudentInfo();
-        } catch (ServletException ex) {
+        } catch (Exception ex) {
             System.out.println("Login failed");
+            ex.printStackTrace();
             return "error.xhtml";
         }
         System.out.println(UserName + "  " + password + " " + " " + FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin"));
@@ -119,4 +120,55 @@ public class UserSessionBean implements Serializable {
             return "./Login.xtml";
         }
     }
+    
+    
+    
+        public String authenticateForMobile() {
+        System.out.println("in auth");
+
+        FacesContext fc = FacesContext.getCurrentInstance();
+        HttpServletRequest req = (HttpServletRequest) fc.getExternalContext().getRequest();
+        try {
+            req.login(UserName, password);
+            
+            
+            //studentInfoView.getStudent().setUserName(UserName);
+            //studentInfoView.fillStudentInfo();
+        } catch (ServletException ex) {
+            System.out.println("Login failed");
+            return "error.xhtml";
+        }
+        System.out.println(UserName + "  " + password + " " + " " + FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin"));
+
+        if (FacesContext.getCurrentInstance().getExternalContext().isUserInRole("admin")) {
+            this.role="admin";
+            return "/faces/admin/AdminMainPage.xhtml?faces-redirect=true";
+        }else if(FacesContext.getCurrentInstance().getExternalContext().isUserInRole("student")){
+            
+            System.out.println(">>>in student");
+            Student student=studentEjb.findStudent(UserName);
+            System.out.println("FL:"+student.getFirstLogin());
+        if (student.getFirstLogin() == 0) {
+            String uri = "/faces/student/changePassword.xhtml?faces-redirect=true";
+            try {
+               return (uri);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+            
+            return "/faces/student/studentM.xhtml?faces-redirect=true";
+        }else if(FacesContext.getCurrentInstance().getExternalContext().isUserInRole("lecturer")){
+            System.out.println(">>>in lecturer");
+            return "/faces/lecturer/LectureMainPage.xhtml?faces-redirect=true";
+        }
+        
+
+        return ("Login.xhtml");
+    }
+
+
+    
+    
+    
 }

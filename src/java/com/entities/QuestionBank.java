@@ -38,11 +38,12 @@ public class QuestionBank implements Serializable{
     @OneToOne
     private Modules module;
     
-     @OneToMany        
+     @OneToMany(mappedBy = "questionBank")        
     List<Question>questions;
      
       @Transient
     List<String>questionTypes;
+      
     @Transient
     private String selectedQuestionType;
 
@@ -92,10 +93,12 @@ public class QuestionBank implements Serializable{
     }
     
     public List<String> getQuestiontypes() {
+        System.out.println("in");
         questionTypes=new ArrayList<String>();
-        questionTypes.add("MultipleChoiceQuestion");
-        questionTypes.add("MultiPart");
-        questionTypes.add("WrittenQuestion");
+        questionTypes.add("Multiple Type Question");
+        questionTypes.add("Multi Part Question");
+        questionTypes.add("Written Question");
+        System.out.println("ino");
         return questionTypes;
     }
 
@@ -107,7 +110,6 @@ public class QuestionBank implements Serializable{
     public void selectQuestionTypeListener()
     {   
         System.out.println("selectedQuestionType:"+selectedQuestionType);
-        
     }
     
     

@@ -53,7 +53,7 @@ public class ModuleEjb {
 //            }
 //        }
 
-        
+        System.out.println(qb.getResultList().get(0).getQuestions().get(0).getQuestionText());
         return qb.getResultList().get(0).getQuestions();
     }
 

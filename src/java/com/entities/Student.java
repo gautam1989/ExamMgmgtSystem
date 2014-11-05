@@ -9,6 +9,7 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Named;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -39,6 +40,19 @@ public class Student {
     
     @OneToMany
     private List<ExamPaper> examsEnrolled;
+    
+    
+    @OneToMany(mappedBy = "student",cascade = CascadeType.PERSIST)
+    private List<ExamSession> examSession;
+
+    public List<ExamSession> getExamSession() {
+        return examSession;
+    }
+
+    public void setExamSession(List<ExamSession> examSession) {
+        this.examSession = examSession;
+    }
+    
    
     public List<ExamPaper> getExamsEnrolled() {
         return examsEnrolled;

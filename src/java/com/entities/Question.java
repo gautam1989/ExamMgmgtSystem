@@ -7,10 +7,13 @@ package com.entities;
 
 import java.sql.Date;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
@@ -28,13 +31,48 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "QUESTION")
     @Id
     private int questionId;
-    @OneToMany
+    @ManyToMany(mappedBy = "question",cascade = CascadeType.PERSIST)
     private List<SubjectTags> subjectTags;
     @Version
     private int versionNumber;
     private Date createdDate;
     private Lecturer createdBy;
     private int mark;
+    
+    @ManyToMany(mappedBy = "questions")
+    private List<Section> section;
+    
+   @ManyToOne
+   private Modules modules;
+
+    public Modules getModules() {
+        return modules;
+    }
+
+    public void setModules(Modules modules) {
+        this.modules = modules;
+    }
+
+    public List<Section> getSection() {
+        return section;
+    }
+
+    public void setSection(List<Section> section) {
+        this.section = section;
+    }
+    
+    
+    
+    @ManyToOne
+    private QuestionBank questionBank;
+
+    public QuestionBank getQuestionBank() {
+        return questionBank;
+    }
+
+    public void setQuestionBank(QuestionBank questionBank) {
+        this.questionBank = questionBank;
+    }
 
     public int getQuestionId() {
         return questionId;

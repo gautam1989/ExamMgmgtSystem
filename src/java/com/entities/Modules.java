@@ -41,7 +41,7 @@ public class Modules implements Serializable{
     @OneToOne(mappedBy = "module")
     private QuestionBank questionBank;
   
-    @OneToMany
+    @OneToMany(mappedBy = "modules")
     private List<ExamPaper> examPaper;
     
     

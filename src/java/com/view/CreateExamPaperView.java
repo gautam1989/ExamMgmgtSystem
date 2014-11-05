@@ -10,6 +10,8 @@ import com.business.ModuleEjb;
 import com.business.QuestionEjb;
 import com.entities.ExamPaper;
 import com.entities.Modules;
+import com.entities.MultiPart;
+import com.entities.MultipleChoiceQuestion;
 import com.entities.Question;
 import com.entities.QuestionBank;
 import com.entities.Section;
@@ -17,10 +19,8 @@ import com.entities.SubjectTags;
 import com.entities.WrittenQuestion;
 import java.io.Serializable;
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -29,10 +29,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.view.ViewScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -75,6 +72,55 @@ public class CreateExamPaperView implements Serializable {
     private List<Integer> seletedSubjectTag;
     private Date startTime;
     private Date endTime;
+    private List<Question> tryList;
+
+    private int[] selectedSubjectTagValA;
+    private int[] selectedSubjectTagValB;
+    private int[] selectedSubjectTagValC;
+    private int[] selectedSubjectTagValD;
+
+    public int[] getSelectedSubjectTagValA() {
+        return selectedSubjectTagValA;
+    }
+
+    public void setSelectedSubjectTagValA(int[] selectedSubjectTagValA) {
+        this.selectedSubjectTagValA = selectedSubjectTagValA;
+    }
+
+    public int[] getSelectedSubjectTagValB() {
+        return selectedSubjectTagValB;
+    }
+
+    public void setSelectedSubjectTagValB(int[] selectedSubjectTagValB) {
+        this.selectedSubjectTagValB = selectedSubjectTagValB;
+    }
+
+    public int[] getSelectedSubjectTagValC() {
+        return selectedSubjectTagValC;
+    }
+
+    public void setSelectedSubjectTagValC(int[] selectedSubjectTagValC) {
+        this.selectedSubjectTagValC = selectedSubjectTagValC;
+    }
+
+    public int[] getSelectedSubjectTagValD() {
+        return selectedSubjectTagValD;
+    }
+
+    public void setSelectedSubjectTagValD(int[] selectedSubjectTagValD) {
+        this.selectedSubjectTagValD = selectedSubjectTagValD;
+    }
+    
+    
+
+
+    public List<Question> getTryList() {
+        return tryList;
+    }
+
+    public void setTryList(List<Question> tryList) {
+        this.tryList = tryList;
+    }
 
     public Date getStartTime() {
         return startTime;
@@ -83,8 +129,6 @@ public class CreateExamPaperView implements Serializable {
     public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
-
-   
 
     public Date getEndTime() {
         return endTime;
@@ -248,6 +292,7 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public QuestionBank getQuestionBank() {
+
         return questionBank;
     }
 
@@ -279,7 +324,6 @@ public class CreateExamPaperView implements Serializable {
         }
 
         subjectTags = questionEjb.retrieveQuestionsOnSubjectTags();
-        System.out.println("populated");
 
     }
 
@@ -321,15 +365,8 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public void selectAllModules() {
-        //selectedModule.setAllModules(moduleEjb.allModules());
-
         allModules = moduleEjb.allModules();
 
-        //questionBank=moduleEjb.findQuestionBank();
-        // this.moduleName=questionBank.getModule().getModuleName();
-        //  System.out.println("all mod: "+);
-        //questionBank.getModule().setAllModules(moduleEjb.allModules());
-        // questionBank.getModules().setAllModules(moduleEjb.allModules());
         RequestContext.getCurrentInstance().openDialog("selectModule");
     }
 
@@ -338,8 +375,7 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public void onselectedModule(Modules module) {
-        //System.out.println("in selectted");
-        //System.out.println(">>>>>" + module.getModuleName());
+
         this.selectedModule = module;
         questionBank.setModule(module);
 
@@ -348,9 +384,28 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public void onSelectOfQuestion() {
-      //  System.out.println(questionBank.getModule().getModuleId());
 
-        //System.out.println(">>>question "+questionBank.getModule().getQuestionBank().getQuestions().size());
+        tryList = new ArrayList<Question>();
+        String var = null;
+        for (Question r : questionBank.getQuestions()) {
+            System.out.println(r.getQuestionText());
+            if (r instanceof WrittenQuestion) {
+                var = "Written Question";
+            }
+            if (r instanceof MultiPart) {
+                var = "Multi Part Question";
+            }
+            if (r instanceof MultipleChoiceQuestion) {
+                var = "Multiple Type Question";
+            }
+            System.out.println("var:" + var);
+            if (var.equals(questionBank.getSelectedQuestionType())) {
+                tryList.add(r);
+                System.out.println(r.getQuestionText());
+                var = null;
+            }
+        }
+
     }
 
     public void addSelectedQuestionSectionA(Question selectedQuestion) {
@@ -358,14 +413,12 @@ public class CreateExamPaperView implements Serializable {
         if (SectionAQuestion.size() == 0) {
             SectionAQuestion.add(selectedQuestion);
             selectedQuestion.getQuestionText();
-            System.out.println("addselectedquestion:" + selectedQuestion.getQuestionText());
 
         } else {
             int j = 0;
             for (int i = 0; i < SectionAQuestion.size(); i++) {
 
                 Question q = (Question) SectionAQuestion.get(i);
-                System.out.println(q.getQuestionText() + " " + selectedQuestion.getQuestionText());
                 if ((q.getQuestionText().equalsIgnoreCase(selectedQuestion.getQuestionText()))) {
                     j = 1;
                     break;
@@ -375,11 +428,9 @@ public class CreateExamPaperView implements Serializable {
             if (j == 0) {
                 SectionAQuestion.add(selectedQuestion);
                 selectedQuestion.getQuestionText();
-                System.out.println("addselectedquestion2:" + selectedQuestion.getQuestionText());
             }
 
         }
-        System.out.println("addselectedquestion:" + SectionAQuestion.size());
         RequestContext.getCurrentInstance().closeDialog(null);
 
     }
@@ -389,14 +440,12 @@ public class CreateExamPaperView implements Serializable {
         if (SectionBQuestion.size() == 0) {
             SectionBQuestion.add(selectedQuestion);
             selectedQuestion.getQuestionText();
-            System.out.println("addselectedquestion:" + selectedQuestion.getQuestionText());
 
         } else {
             int j = 0;
             for (int i = 0; i < SectionBQuestion.size(); i++) {
 
                 Question q = (Question) SectionBQuestion.get(i);
-                System.out.println(q.getQuestionText() + " " + selectedQuestion.getQuestionText());
                 if ((q.getQuestionText().equalsIgnoreCase(selectedQuestion.getQuestionText()))) {
                     j = 1;
                     break;
@@ -406,11 +455,9 @@ public class CreateExamPaperView implements Serializable {
             if (j == 0) {
                 SectionBQuestion.add(selectedQuestion);
                 selectedQuestion.getQuestionText();
-                System.out.println("addselectedquestion2:" + selectedQuestion.getQuestionText());
             }
 
         }
-        System.out.println("addselectedquestion:" + SectionBQuestion.size());
         RequestContext.getCurrentInstance().closeDialog(null);
 
     }
@@ -426,7 +473,6 @@ public class CreateExamPaperView implements Serializable {
             for (int i = 0; i < SectionCQuestion.size(); i++) {
 
                 Question q = (Question) SectionCQuestion.get(i);
-                System.out.println(q.getQuestionText() + " " + selectedQuestion.getQuestionText());
                 if ((q.getQuestionText().equalsIgnoreCase(selectedQuestion.getQuestionText()))) {
                     j = 1;
                     break;
@@ -436,7 +482,6 @@ public class CreateExamPaperView implements Serializable {
             if (j == 0) {
                 SectionCQuestion.add(selectedQuestion);
                 selectedQuestion.getQuestionText();
-                System.out.println("addselectedquestion2:" + selectedQuestion.getQuestionText());
             }
 
         }
@@ -456,7 +501,6 @@ public class CreateExamPaperView implements Serializable {
             for (int i = 0; i < SectionDQuestion.size(); i++) {
 
                 Question q = (Question) SectionDQuestion.get(i);
-                System.out.println(q.getQuestionText() + " " + selectedQuestion.getQuestionText());
                 if ((q.getQuestionText().equalsIgnoreCase(selectedQuestion.getQuestionText()))) {
                     j = 1;
                     break;
@@ -523,8 +567,6 @@ public class CreateExamPaperView implements Serializable {
 
     public void deleteQuestionSectionA() {
 
-        System.out.println(checkedA);
-
         if (SectionAQuestion != null) {
             for (int i = 0; i < SectionAQuestion.size(); i++) {
                 Question q = (Question) SectionAQuestion.get(i);
@@ -533,7 +575,6 @@ public class CreateExamPaperView implements Serializable {
                     i = i - 1;
                 }
             }
-            System.out.println("After remove: " + SectionAQuestion.size());
         }
 
     }
@@ -578,7 +619,6 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public String createExamPaper() {
-        System.out.println("Create Exam paper");
 
         examPaper = new ExamPaper();
         examPaper.setCreatedDate(new java.sql.Date(System.currentTimeMillis()));
@@ -588,67 +628,67 @@ public class CreateExamPaperView implements Serializable {
 
         Calendar c = Calendar.getInstance();
         c.setTime(examDate);
-        System.out.println("TINsE:" + c.getTimeInMillis());
 
         DateFormat format = new SimpleDateFormat("HH");
         String dateF = format.format(examDate);
-        System.out.println("TTT:" + new Integer(dateF));
 
         examPaper.setExamDuration(examDuration);
         examPaper.setModuleCode(selectedModule.getModuleId());
+        examPaper.setModules(selectedModule);
 
-        
-        
         Date newstartDate = new java.sql.Date(startTime.getTime());
-        Time newstTime=new Time(newstartDate.getTime());
-         examPaper.setStartTime(newstTime);
-         
-         Date newendDate = new java.sql.Date(endTime.getTime());
-        Time newenTime=new Time(endTime.getTime());
-         examPaper.setEndTime(newenTime);
-        
+        Time newstTime = new Time(newstartDate.getTime());
+        examPaper.setStartTime(newstTime);
 
-        
-        
-        
-        
+        Date newendDate = new java.sql.Date(endTime.getTime());
+        Time newenTime = new Time(endTime.getTime());
+        examPaper.setEndTime(newenTime);
+
         List<Section> allSections = new ArrayList<Section>();
         if (SectionAQuestion.size() > 0) {
             Section sectionA = new Section();
             sectionA.setName("A");
             sectionA.setQuestions(SectionAQuestion);
+
             sectionA.setSectionMarks(retrieveMarksForSectionA());
             allSections.add(sectionA);
+            sectionA.setExamPaper(examPaper);
+
+            for (Question A : SectionAQuestion) {
+
+            }
+
         }
         if (SectionBQuestion.size() > 0) {
             Section sectionB = new Section();
             sectionB.setName("B");
             sectionB.setQuestions(SectionBQuestion);
+
             sectionB.setSectionMarks(retrieveMarksForSectionB());
             allSections.add(sectionB);
+            sectionB.setExamPaper(examPaper);
         }
         if (SectionCQuestion.size() > 0) {
             Section sectionC = new Section();
-            sectionC.setName("A");
+            sectionC.setName("C");
             sectionC.setQuestions(SectionCQuestion);
-            sectionC.setSectionMarks(retrieveMarksForSectionA());
+
+            sectionC.setSectionMarks(retrieveMarksForSectionC());
             allSections.add(sectionC);
+            sectionC.setExamPaper(examPaper);
         }
         if (SectionDQuestion.size() > 0) {
             Section sectionD = new Section();
-            sectionD.setName("A");
-            sectionD.setQuestions(SectionCQuestion);
+            sectionD.setName("D");
+            sectionD.setQuestions(SectionDQuestion);
+
             sectionD.setSectionMarks(retrieveMarksForSectionD());
             allSections.add(sectionD);
+            sectionD.setExamPaper(examPaper);
         }
 
         examPaper.setSections(allSections);
-        List<ExamPaper> ep = new ArrayList<ExamPaper>();
-        ep.add(examPaper);
-        selectedModule.setExamPaper(ep);
-        System.out.println(examPaper);
-
-        System.out.println("Exam Saved: " + examPaperEjb.saveExamPaper(examPaper));
+        examPaperEjb.saveExamPaper(examPaper);
         return "null";
     }
 
@@ -657,31 +697,50 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public void generateAutomaticQuestion(String section, int marks) {
-        System.out.println("News: " + marks);
         if (section.trim().equalsIgnoreCase("A")) {
 
-            SectionAQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
-        } else if (section.trim().equalsIgnoreCase("B")) {
-            SectionBQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
-
-        } else if (section.trim().equalsIgnoreCase("C")) {
-
-            SectionCQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
-
-        } else if (section.trim().equalsIgnoreCase("D")) {
-
-            SectionDQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
-
-            SectionAQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
+            System.out.println("VAl");
+            System.out.println(selectedSubjectTagValA.length);
+            if (selectedSubjectTagValA.length != 0) {
+                SectionAQuestion = questionEjb.findAllQuestionsForSubjectTag(selectedSubjectTagValA, marks);
+            }
         } else if (section.trim().equalsIgnoreCase("B")) {
 
-            SectionBQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
+            System.out.println("VAl-B:");
+            if (selectedSubjectTagValB.length != 0) {
+                System.out.println(selectedSubjectTagValB.length);
+            }
+
+            SectionBQuestion = questionEjb.findAllQuestionsForSubjectTag(selectedSubjectTagValB, marks);
+
         } else if (section.trim().equalsIgnoreCase("C")) {
+            if (selectedSubjectTagValC.length != 0) {
+                System.out.println("in C");
+                SectionCQuestion = questionEjb.findAllQuestionsForSubjectTag(selectedSubjectTagValC, marks);
+            }
 
-            SectionCQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
         } else if (section.trim().equalsIgnoreCase("D")) {
+            System.out.println("VAL:D");
+            if (selectedSubjectTagValD.length != 0) {
+                SectionDQuestion = questionEjb.findAllQuestionsForSubjectTag(selectedSubjectTagValD, marks);
+            }
 
-            SectionDQuestion = questionEjb.findAllQuestionsForSubjectTag(seletedSubjectTag, marks);
+        }
+    }
+
+    public boolean validateInstance(Question question) {
+        String var = null;
+        if (question instanceof WrittenQuestion) {
+            var = "WrittenQuestion";
+        }
+        if (var != null && questionBank.getSelectedQuestionType() != null) {
+            if (questionBank.getSelectedQuestionType().equals(var)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 

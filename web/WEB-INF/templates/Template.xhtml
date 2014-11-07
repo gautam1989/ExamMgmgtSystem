@@ -38,11 +38,12 @@
                     <p:menu>
 
                         <p:menuitem value="Create Exam paper" url="CreateExamPaper.xhtml" rendered="#{request.isUserInRole('lecturer')}"/>
-                        <p:menuitem value="Add/Update Questions"  rendered="#{request.isUserInRole('lecturer')}"/>
+                        <p:menuitem value="Add/Update Questions" url="question.xhtml" rendered="#{request.isUserInRole('lecturer')}"/>
                         <p:menuitem value="Invigilate Exams" url="invigilateExams.xhtml" rendered="#{(request.isUserInRole('lecturer'))or(request.isUserInRole('admin')) }" />
                         <p:menuitem value="Exam Start" rendered="#{request.isUserInRole('student')}" />
                         <p:menuitem value="Student upload" rendered="#{request.isUserInRole('admin')}" url="studentInfoUpload.xhtml" />
-                        <p:menuitem value="lecturer upload" rendered="#{request.isUserInRole('admin')}" url="lecturerinfo.xhtml"/>
+                        <p:menuitem value="lecturer upload" rendered="#{request.isUserInRole('admin')}" url="lecturerInfoUpload.xhtml"/>
+                        <p:menuitem value="Add Subject tags" rendered="#{request.isUserInRole('admin')}" url="SubjectInfoUpload.xhtml"/>
 
                     </p:menu>
                 </h:form>

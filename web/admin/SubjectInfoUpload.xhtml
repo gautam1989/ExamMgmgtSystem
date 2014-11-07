@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      >
+    <h:head>
+        <title>Add new Subject Tag</title>
+    </h:head>
+    <h:body>
+        
+         <ui:composition template="/WEB-INF/templates/Template.xhtml">
+
+            <ui:define name="left">
+
+
+            </ui:define>
+            <ui:define name="right">
+                <h:form>
+                    <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
+                        <h:outputLabel value="#{userSessionBean.userName}" />
+                        <h:commandButton value="Logout" action="#{userSessionBean.logout()}" /> 
+                    </h:panelGrid>       
+                </h:form>
+            </ui:define>
+            <ui:define name="content">
+        <h:form>
+          <p:fieldset legend="Subject Tags">
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="SubjectTag Name" /> 
+                            <p:inputText value="#{subjectTagView.subjectTagname}" placeholder="Enter Name"/>
+                         
+                    </p:panelGrid>
+              </p:fieldset>
+            <p:commandButton value="Add" action="#{subjectTagView.addSubjectTag()}" >
+                    </p:commandButton>
+             </h:form>    
+                   </ui:define>
+
+
+        </ui:composition>
+
+    </h:body>
+</html>
+

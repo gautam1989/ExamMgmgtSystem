@@ -7,6 +7,7 @@ package com.entities;
 
 import java.sql.Date;
 import java.sql.Time;
+import javax.inject.Named;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +21,7 @@ import javax.persistence.Transient;
  * @author gautamverma
  */
 @Entity
+@Named
 public class ExamSession {
     
     @TableGenerator(name="EXAMP_SESSION", table="SEQUENCE_TABLE", pkColumnName="SEQ_NAME",
@@ -34,6 +36,14 @@ public class ExamSession {
     private int courseCode;
     private String location;
     
+    @OneToOne
+    private ExamPaper examPaper;
+ 
+    
+    @OneToOne
+    private PdfAnswers pdfAnswers;
+    
+    private boolean currentRunningStatus;
     
     
     @OneToOne
@@ -121,13 +131,5 @@ public class ExamSession {
     private Admin invigilator;
     
     
-    @OneToOne
-    private ExamPaper examPaper;
- 
-    
-    @OneToOne
-    private PdfAnswers pdfAnswers;
-    
-    private boolean currentRunningStatus;
     
 }

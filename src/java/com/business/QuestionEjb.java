@@ -5,9 +5,16 @@
  */
 package com.business;
 
+import com.entities.Lecturer;
+import com.entities.Modules;
+import com.entities.MultiPart;
+import com.entities.MultipleChoiceQuestion;
 import com.entities.Question;
+import com.entities.QuestionBank;
 import com.entities.SubjectTags;
+import com.entities.WrittenQuestion;
 import com.view.CreateExamPaperView;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -115,8 +122,129 @@ public class QuestionEjb {
 
     }
     
+     public void addMcq(MultipleChoiceQuestion mcqQuestion,Modules module){
+       
+        
+        TypedQuery<QuestionBank> questionBanks = em.createQuery("select q from QuestionBank q where q.module.moduleId =:moduleid", QuestionBank.class);
+        questionBanks.setParameter("moduleid", module.getModuleId());
+       // mcqQuestion.setQuestionBank(questionBanks.getResultList().get(0));
+        if(questionBanks.getResultList().size()==0){
+            System.out.println("sdf:"+questionBanks.getResultList().size());
+            QuestionBank qb=new QuestionBank();
+            
+            qb.setModule(module);
+            List<Question>lb=new ArrayList<Question>();
+            lb.add(mcqQuestion);
+            qb.setQuestions(lb);
+            em.merge(qb);
+            //questionBanks.getResultList();
+            mcqQuestion.setQuestionBank(qb);
+            em.merge(mcqQuestion);
+            
+        }else
+        {
+            System.out.println("scfsdv");
+        mcqQuestion.setQuestionBank(questionBanks.getResultList().get(0));
+        em.merge(mcqQuestion);
+        }
+        }
+        
     
+     
+    public void addWrittenQuestion(WrittenQuestion writtenQuestion,Modules module){
+        
+        TypedQuery<QuestionBank> questionBanks = em.createQuery("select q from QuestionBank q where q.module.moduleId =:moduleid", QuestionBank.class);
+       
+        questionBanks.setParameter("moduleid", module.getModuleId());
+       if(questionBanks.getResultList().size()==0){
+            System.out.println("sdf:"+questionBanks.getResultList().size());
+            QuestionBank qb=new QuestionBank();
+            
+            qb.setModule(module);
+            List<Question>lb=new ArrayList<Question>();
+            lb.add(writtenQuestion);
+            qb.setQuestions(lb);
+            em.merge(qb);
+            //questionBanks.getResultList();
+            writtenQuestion.setQuestionBank(qb);
+            em.merge(writtenQuestion);
+            
+        }else{
+        writtenQuestion.setQuestionBank(questionBanks.getResultList().get(0));
+        
+        em.merge(writtenQuestion);
+       }
+    }
     
+    public void addMultiPartQuestion(List<MultipleChoiceQuestion> mcqQuestionList,List<WrittenQuestion> writtenQuestionList,Modules module,List<SubjectTags> subjectTags){
+        
+        int totalMarks=0;
+        MultiPart multiPartQuestion=new MultiPart();
+        multiPartQuestion.setModules(module);
+        TypedQuery<QuestionBank> questionBanks = em.createQuery("select q from QuestionBank q where q.module.moduleId =:moduleid", QuestionBank.class);
+        questionBanks.setParameter("moduleid", module.getModuleId());
+        multiPartQuestion.setMultipleChoiceQuestions(mcqQuestionList);
+        multiPartQuestion.setWrittenAnswers(writtenQuestionList);
+        for(int i=0;i<mcqQuestionList.size();i++){
+            mcqQuestionList.get(i).setMultiPart(multiPartQuestion);
+            mcqQuestionList.get(i).setQuestionBank(questionBanks.getResultList().get(0));
+           
+            totalMarks=totalMarks+mcqQuestionList.get(i).getMark();
+        }
+        //em.merge(mcqQuestionList);
+        for(int i=0;i<writtenQuestionList.size();i++){
+            writtenQuestionList.get(i).setMultiPart(multiPartQuestion);
+            writtenQuestionList.get(i).setQuestionBank(questionBanks.getResultList().get(0));
+            totalMarks=totalMarks+writtenQuestionList.get(i).getMark();
+        }
+        multiPartQuestion.setMultipleChoiceQuestions(mcqQuestionList);
+        multiPartQuestion.setWrittenAnswers(writtenQuestionList);
+        Lecturer l=new Lecturer();
+        l.setId(23);
+        multiPartQuestion.setCreatedBy(l);
+        java.util.Date utilDate = new java.util.Date();
+        multiPartQuestion.setCreatedDate(new Date(utilDate.getTime()));
+        multiPartQuestion.setSubjectTags(subjectTags);
+        multiPartQuestion.setMark(totalMarks);
+        multiPartQuestion.setQuestionText("Answer the following:");
+        
+        
+        
+        
+        multiPartQuestion.setQuestionBank(questionBanks.getResultList().get(0));
+        em.merge(multiPartQuestion);
+       
+    }
+ 
+    public void updateMCQQuestion(MultipleChoiceQuestion mcq){
+        MultipleChoiceQuestion findMcq= em.find(MultipleChoiceQuestion.class, mcq.getQuestionId());
+        if(findMcq !=null)
+        {
+            findMcq=mcq;
+            em.merge(findMcq);
+        }
+    }
     
+    public void updateWrittenQuestion(WrittenQuestion writtenquestion){
+        WrittenQuestion findwrittenQuestion= em.find(WrittenQuestion.class, writtenquestion.getQuestionId());
+        if(findwrittenQuestion !=null)
+        {
+            findwrittenQuestion=writtenquestion;
+            em.merge(findwrittenQuestion);
+        }
+    }
+    
+     public List<Question> getAllQuestions(){
+        TypedQuery<Question> questions=em.createQuery("select q from Question q ", Question.class);
+    
+        return questions.getResultList();
+    }
+     public List<Question> getAllQuestionsByModule(Modules module){
+        TypedQuery<QuestionBank> questionBanks = em.createQuery("select qb from QuestionBank qb where qb.module.moduleId =:moduleid", QuestionBank.class);
+        questionBanks.setParameter("moduleid", module.getModuleId());
+        TypedQuery<Question> questions = em.createQuery("select q from Question q where q.questionBank.questionBankId=:qbId",Question.class);
+        questions.setParameter("qbId", questionBanks.getResultList().get(0).getQuestionBankId());
+        return questions.getResultList();
+    }
 
 }

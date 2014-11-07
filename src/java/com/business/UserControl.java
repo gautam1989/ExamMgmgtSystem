@@ -5,6 +5,7 @@
  */
 package com.business;
 
+import com.entities.Lecturer;
 import com.entities.Student;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -41,7 +42,6 @@ public class UserControl {
 
             statement = connect.createStatement();
 
-            
             preparedStatement = connect
                     .prepareStatement("insert into users(userid,password) values(?,?)");
 
@@ -54,23 +54,72 @@ public class UserControl {
             e.printStackTrace();
         }
         return true;
-    
-}
 
-public boolean passwordChange(Student student) {
+    }
+
+    public boolean saveLecturer(Lecturer lecturer) {
         try {
-
-          
 
             Class.forName("com.mysql.jdbc.Driver");
             connect = DriverManager.getConnection("jdbc:mysql://localhost/ExamMgmtSystem?"
                     + "user=root&password=root");
 
             statement = connect.createStatement();
-            
+
+            preparedStatement = connect
+                    .prepareStatement("insert into users(userid,password) values(?,?)");
+
+            preparedStatement.setString(2, lecturer.getPassword());
+            preparedStatement.setString(1, lecturer.getUserName());
+
+            preparedStatement.executeUpdate();
+            saveLecturerInGroup(lecturer);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+
+    }
+
+    
+    private boolean saveLecturerInGroup(Lecturer lecturer)
+    {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost/ExamMgmtSystem?"
+                    + "user=root&password=root");
+
+            statement = connect.createStatement();
+
+            preparedStatement = connect
+                    .prepareStatement("insert into users_groups(groupid,userid) values(?,?)");
+
+            preparedStatement.setString(1, "lecturer");
+            preparedStatement.setString(2, lecturer.getUserName());
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+        
+    }
+    
+    public boolean passwordChange(Student student) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost/ExamMgmtSystem?"
+                    + "user=root&password=root");
+
+            statement = connect.createStatement();
+
             resultSet = statement
                     .executeQuery("select * from users");
-            while(resultSet.next())System.out.println("RS:1:"+resultSet.getString(1));
+            while (resultSet.next()) {
+                System.out.println("RS:1:" + resultSet.getString(1));
+            }
             System.out.println(student.getPassword());
             preparedStatement = connect
                     .prepareStatement("update users set password=? where userid=?");
@@ -85,5 +134,34 @@ public boolean passwordChange(Student student) {
         }
         return true;
     }
+    
+    public boolean passwordChangeLecturer(Lecturer lecturer) {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost/ExamMgmtSystem?"
+                    + "user=root&password=root");
+
+            statement = connect.createStatement();
+
+            resultSet = statement
+                    .executeQuery("select * from users");
+           
+            System.out.println(lecturer.getPassword());
+            preparedStatement = connect
+                    .prepareStatement("update users set password=? where userid=?");
+
+            preparedStatement.setString(1, lecturer.getPassword());
+            preparedStatement.setString(2, lecturer.getUserName());
+
+            preparedStatement.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+    
+    
 
 }

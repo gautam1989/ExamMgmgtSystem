@@ -5,8 +5,10 @@
  */
 package com.view;
 
+import com.business.LecturerEjb;
 import com.business.StudentEjb;
 import com.entities.Admin;
+import com.entities.Lecturer;
 import com.entities.Student;
 import java.io.IOException;
 import java.io.Serializable;
@@ -35,6 +37,8 @@ public class UserSessionBean implements Serializable {
 
     @Inject
     StudentEjb studentEjb;
+    @Inject
+    LecturerEjb lecturerEjb;
     
     public String getPassword() {
         return password;
@@ -98,6 +102,20 @@ public class UserSessionBean implements Serializable {
             return "/faces/student/student.xhtml?faces-redirect=true";
         }else if(FacesContext.getCurrentInstance().getExternalContext().isUserInRole("lecturer")){
             System.out.println(">>>in lecturer");
+            
+            Lecturer lecturer=lecturerEjb.findLecturer(UserName);
+            System.out.println("FL:"+lecturer.getFirstLogin());
+        if (lecturer.getFirstLogin() == 0) {
+            String uri = "/faces/lecturer/changePassword.xhtml?faces-redirect=true";
+            try {
+               return (uri);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+            
+            
+            
             return "/faces/lecturer/LectureMainPage.xhtml?faces-redirect=true";
         }
         

@@ -25,17 +25,19 @@ public class PdfAnswers {
     @GeneratedValue(strategy=GenerationType.TABLE, generator="PDFANSWERS")
     
     @Id
-    private ExamSession examSession;
+    private int id;
     
     private Map<String,List<String>> questionAndAnswer;
 
-    public ExamSession getExamSession() {
-        return examSession;
+    public int getId() {
+        return id;
     }
 
-    public void setExamSession(ExamSession examSession) {
-        this.examSession = examSession;
+    public void setId(int id) {
+        this.id = id;
     }
+
+    
 
     public Map<String, List<String>> getQuestionAndAnswer() {
         return questionAndAnswer;
@@ -44,6 +46,5 @@ public class PdfAnswers {
     public void setQuestionAndAnswer(Map<String, List<String>> questionAndAnswer) {
         this.questionAndAnswer = questionAndAnswer;
     }
-   
     
 }

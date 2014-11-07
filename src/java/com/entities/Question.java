@@ -31,7 +31,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.TABLE, generator = "QUESTION")
     @Id
     private int questionId;
-    @ManyToMany(mappedBy = "question",cascade = CascadeType.PERSIST)
+    @OneToMany
     private List<SubjectTags> subjectTags;
     @Version
     private int versionNumber;

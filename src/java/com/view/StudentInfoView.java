@@ -10,6 +10,7 @@ import com.business.ModuleEjb;
 import com.business.StudentEjb;
 import com.business.UserControl;
 import com.entities.ExamPaper;
+import com.entities.ExamSession;
 import com.entities.Question;
 import com.entities.Student;
 import java.io.IOException;
@@ -47,6 +48,19 @@ public class StudentInfoView implements Serializable {
     private String confirmPassword;
     @Resource
     UserTransaction userTransaction;
+    
+    private ExamPaper examPaper;
+
+    public ExamPaper getExamPaper() {
+        return examPaper;
+    }
+
+    public void setExamPaper(ExamPaper examPaper) {
+        this.examPaper = examPaper;
+    }
+    
+    
+   
 
     public String getPassword() {
         return password;
@@ -91,8 +105,10 @@ public class StudentInfoView implements Serializable {
     }
 
     public String startExamWithId(int examId) {
-        ExamPaper examPaper = examPaperEjb.startExamWithId(examId);
-        System.out.println("EXAM Paper:" + examPaper.toString());
+        ExamPaper examPapers = examPaperEjb.startExamWithId(examId);
+        System.out.println("EXAM Paper:" + examPapers.toString());
+        this.examPaper=examPapers;
+        
         
         return "exam.xhtml";
     }

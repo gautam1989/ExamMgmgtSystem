@@ -9,6 +9,7 @@ import com.entities.Question;
 import com.entities.Student;
 import com.entities.SubjectTags;
 import com.entities.Admin;
+import com.entities.ExamPaper;
 import com.entities.Modules;
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -63,6 +64,24 @@ public class StudentEjb {
             userControl=new UserControl();
             
             userControl.saveStudent(student);
+            List<Integer>modulesIds=new ArrayList<Integer>();
+            for(Modules m:student.getModulesEnrolled()){
+                modulesIds.add(m.getModuleId());
+            }
+            
+            TypedQuery<Modules> modulePaper=em.createQuery("select m from Modules m where m.moduleId IN :modulesIds", Modules.class);
+            modulePaper.setParameter("modulesIds", modulesIds);
+            
+            
+            for(Modules mp:modulePaper.getResultList()){
+                student.setExamsEnrolled(mp.getExamPaper());
+            }
+            
+            //int g=examPapers.getResultList().get(0).();
+            
+            //System.out.println("EXAMS ROLES:"+g);
+            
+            
             
             em.merge(student);
 

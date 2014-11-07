@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Select Question</title>
+    </h:head>
+    <h:body>
+        <h:form id="selectQuestionForm">
+
+            <p:panelGrid>
+                <p:row>
+                    <p:column >Select type of Question</p:column>
+                    <p:column>
+                        <p:selectOneMenu value="#{createExamPaperView.questionBank.selectedQuestionType}">
+                            <p:ajax event="valueChange" update="@form"
+                                    listener="#{createExamPaperView.questionBank.selectQuestionTypeListener()}" />
+                            <f:selectItems value="#{createExamPaperView.questionBank.questiontypes}"></f:selectItems>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:dataTable value="${createExamPaperView.questionBank.questions}" var="question">
+                        <f:facet name="header">
+                            List of Question
+                        </f:facet>
+
+                    </p:dataTable>
+
+                </p:row>
+            </p:panelGrid>
+
+
+        </h:form>
+    </h:body>
+</html>
+

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <h:head>
+        <h:outputStylesheet name="./css/default.css"/>
+    </h:head>
+    <h:body>
+
+        <ui:composition template="/WEB-INF/templates/Template.xhtml">
+
+            <ui:define name="left">
+
+
+            </ui:define>
+            <ui:define name="right">
+                <h:form>
+                    <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
+                        <h:outputLabel value="#{userSessionBean.userName}" />
+                        <h:commandButton value="Logout" action="#{userSessionBean.logout()}" /> 
+                    </h:panelGrid>       
+                </h:form>
+            </ui:define>
+            <ui:define name="content">
+
+                <h:form id="QuestionForm" >
+                    <h:panelGrid columns="2">
+                        <h:inputText value="#{questionView.selectedModule.moduleName}"></h:inputText>   
+                        <p:commandButton value="Select Module" icon="ui-icon-extlink" actionListener="#{questionView.selectAllModules()}">
+                            <p:ajax listener="#{questionView.onModuleChosen(event)}" update="@form" event="dialogReturn" ></p:ajax>
+
+                        </p:commandButton>
+
+
+
+
+
+
+                        Add or Update:  <p:selectOneRadio id="AddOrUpdateQuestion" value="#{questionView.addQuestion}"  >
+                            <f:selectItem itemLabel="Update A Question" itemValue="update" noSelectionOption="true" ></f:selectItem>
+                            <f:selectItem itemLabel="Add A Question" itemValue="add" noSelectionOption="true"></f:selectItem>
+
+                            <p:ajax process=":QuestionForm" update="@form" ></p:ajax>
+
+
+                        </p:selectOneRadio>
+                        <p:panelGrid columns="2" rendered="#{questionView.checkAdd()}" >
+                            <p:outputLabel value="Select tags"/>
+                            <h:selectManyListbox value="#{questionView.selectedsubjectTag}"  >
+                                <f:selectItems value="#{questionView.subjectTagList}" var="subjectTag" itemLabel="#{subjectTag.subjectTagname}" itemValue="#{subjectTag.subjectTagId}" />
+                            </h:selectManyListbox>
+
+                        </p:panelGrid>
+
+                        <p:selectOneMenu id="QuestionType" value="#{questionView.type}" rendered="#{questionView.checkAdd()}">
+                            <f:selectItems value="#{questionView.types}" noSelectionValue="true"></f:selectItems>
+
+                            <p:ajax   update="@form"></p:ajax>
+                        </p:selectOneMenu> 
+
+                    </h:panelGrid>
+                    <p:panelGrid columns="1" id="MultipleChoiceQuestionForm" rendered="#{(questionView.checkQuestionType() eq 'MCQ') and (questionView.checkAdd() eq 'true')}" >
+                        <p:selectBooleanCheckbox itemLabel="Is Multiple Answer?" value="#{questionView.mcqQuestion.isMultiple}">
+
+                        </p:selectBooleanCheckbox>
+
+                        <p:inputText placeholder="Enter Question" size="80" value="#{questionView.mcqQuestion.questionText}"></p:inputText>
+
+                        <p:inputText id="MarksMCQ" placeholder="Marks" value="#{questionView.mcqQuestion.mark}"/>  
+                        <p:slider for="MarksMCQ" step="5"/> 
+
+                        <p:inputText placeholder="Enter Option 1" size="60" value="#{questionView.option1}" ></p:inputText>
+                        <p:inputText placeholder="Enter Option 2" size="60" value="#{questionView.option2}"></p:inputText>
+                        <p:inputText placeholder="Enter Option 3" size="60" value="#{questionView.option3}"></p:inputText>
+                        <p:inputText placeholder="Enter Option 4" size="60" value="#{questionView.option4}"></p:inputText>
+                        <p:commandButton value="Add Question" action="#{questionView.addMCQQuestion()}"/>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="1" id="EssayQuestionForm" rendered="#{(questionView.checkQuestionType() eq 'EssayQuestion')and (questionView.checkAdd() eq 'true')}" >
+
+                        <p:inputText placeholder="Enter Question" size="80" value="#{questionView.writtenQuestion.questionText}"></p:inputText>
+
+                        <p:inputText id="MarksEssay" placeholder="Marks" value="#{questionView.writtenQuestion.mark}"/>  
+                        <p:slider for="MarksEssay" step="5" /> 
+                        <p:commandButton value="Add Question" action="#{questionView.addWrittenQuestion()}"/>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="1" id="MultiPartQuestionForm" rendered="#{(questionView.checkQuestionType() eq 'MultiPartQuestion')and (questionView.checkAdd() eq 'true')}" >
+
+                        <p:commandButton value="Add a Multiple choice question" icon="ui-icon-extlink" actionListener="#{questionView.renderMCQDialog()}">
+                            <p:ajax listener="#{questionView.onModuleChosens(event)}" update="@form"  event="dialogReturn" ></p:ajax>
+                        </p:commandButton>
+
+
+                        <p:dataTable id="MCQdataTable"  var="mcqQuestion" value="#{questionView.mcqQuestionList}" paginator="true" rows="10" rendered="#{questionView.checkQuestionType() eq 'MultiPartQuestion'}">
+                            <p:column headerText="MCQQuestions">
+                                <h:outputText value="#{mcqQuestion.questionText}" />
+                            </p:column>
+
+                        </p:dataTable>
+
+                        <br></br>
+                        <p:commandButton value="Add an Essay question" icon="ui-icon-extlink" actionListener="#{questionView.renderWrittenQuestionDialog()}" >
+                            <p:ajax listener="#{questionView.onModuleChosens(event)}" update="@form"  event="dialogReturn" ></p:ajax>  
+                        </p:commandButton>
+                    </p:panelGrid>
+
+                    <p:panelGrid columns="1"  >
+                        <p:dataTable value="${questionView.questionList}" var="question" rendered="#{questionView.checkAdd() == 'false'}">
+                            <f:facet name="header">
+                                List of Questions
+                            </f:facet>
+                            <p:column headerText="Question">
+                                <h:outputText value="#{question.questionText}" />
+                            </p:column>
+                            <p:column headerText="Modules">
+                                <h:outputText value="#{question.modules.moduleName}" />
+                            </p:column>
+                            <p:column>
+                                <p:commandButton value="Edit" actionListener="#{questionView.returnQuestionForms(question)}" >
+                                    <p:ajax listener="#{questionView.onModuleChosens(event)}" update="@form" event="dialogReturn" ></p:ajax>
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+                    </p:panelGrid>
+
+
+
+
+                    <p:dataTable id="WrittenQuestiondataTable"  var="writtenQuestion" value="#{questionView.writtenQuestionList}" paginator="true" rows="10" rendered="#{questionView.checkQuestionType() eq 'MultiPartQuestion'}">
+                        <p:column headerText="Essay Questions">
+                            <h:outputText value="#{writtenQuestion.questionText}" />
+                        </p:column>
+                    </p:dataTable>
+
+                    <p:commandButton style="font-weight:  bolder" value="Add Multipart question" action="#{questionView.addMultiPartQuestion()}" rendered="#{questionView.checkQuestionType() eq 'MultiPartQuestion'}"/>
+
+                </h:form>     
+
+            </ui:define>
+
+
+        </ui:composition>
+
+    </h:body>
+
+</html>

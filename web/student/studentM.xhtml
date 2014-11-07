@@ -15,17 +15,20 @@
         <h:form>
             <pm:content>
 
-                <p:dataList value="#{studentInfoView.student.examsEnrolled}" var="car" >
+                <p:dataList value="#{studentInfoView.student.examsEnrolled}" var="exam" >
                     <f:facet name="header">
-                        List of Cars
+                        List of Enrolled Exams
                     </f:facet>
 
                     <h:outputLink value="#">
-                        
-                        <h2>#{car.examPaperId}</h2>
-                        <h2>#{car.examDate} </h2>
-                        <h2>#{car.examDuration} </h2>
-                        <h2>#{studentInfoView.moduleNameforModuleId(car.moduleCode)} </h2>
+                        <h2>Exam ID</h2>
+                        <h3>#{exam.examPaperId}</h3>
+                        <h2>Exam Date</h2>
+                        <h3>#{exam.examDate} </h3>
+                        <h2>Exam Duration</h2>
+                        <h3>#{exam.examDuration} </h3>
+                        <h2>Exam Module</h2>
+                        <h3>#{studentInfoView.moduleNameforModuleId(exam.moduleCode)} </h3>
                     </h:outputLink>
                 </p:dataList>
             </pm:content>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Add MCQ</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:panelGrid columns="1"  >
+               
+                <p:selectBooleanCheckbox itemLabel="Is Multiple Answer?" value="#{questionView.mcqQuestion.isMultiple}">
+                   
+                </p:selectBooleanCheckbox>
+                <p:inputText placeholder="Enter Question" size="80" value="#{questionView.mcqQuestion.questionText}"></p:inputText>
+                <p:inputText id="MarksMCQ" placeholder="Marks" value="#{questionView.mcqQuestion.mark}"/>  
+                <p:slider for="MarksMCQ" step="5"/> 
+                <p:inputText placeholder="Enter Option 1" size="60" value="#{questionView.option1}"></p:inputText>
+            <p:inputText placeholder="Enter Option 2" size="60" value="#{questionView.option2}"></p:inputText>
+            <p:inputText placeholder="Enter Option 3" size="60" value="#{questionView.option3}"></p:inputText>
+            <p:inputText placeholder="Enter Option 4" size="60" value="#{questionView.option4}"></p:inputText>
+            <p:commandButton value="Update Question" action="#{questionView.onUpdateMCQQuestion()}">
+            
+            </p:commandButton>
+            </p:panelGrid>
+        </h:form>
+    </h:body>
+</html>

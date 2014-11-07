@@ -36,6 +36,8 @@ public class MultiPart extends Question{
     public void setMultipleChoiceQuestions(List<MultipleChoiceQuestion> multipleChoiceQuestions) {
         this.multipleChoiceQuestions = multipleChoiceQuestions;
     }
+
+   
     
     
     

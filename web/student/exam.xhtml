@@ -50,11 +50,12 @@
 <!--                            <p:poll listener="#{exampaperView.decreaseCount()}" interval="1" update="txt"/>-->
 
                         </h:panelGrid>
-                        <div align="right"> <p:commandButton id="nextButton" value="Next" action="#{exampaperView.nextSectionAQuestion()}" rendered="#{exampaperView.nextVal}" update="examForm :sectionForm:questionField"/> </div>
                     </p:fieldset>
                 </h:form>
                 <h:form id="sectionForm">
-                    <p:fieldset legend="Section A" id="questionField">
+                                            <div align="right"> <p:commandButton id="nextButton" value="Next" action="#{exampaperView.nextSectionAQuestion()}" rendered="#{exampaperView.nextVal}" update=":sectionForm:questionField"/> </div>
+
+                    <p:fieldset legend="Section" id="questionField">
 
                         <p:panel header="Question" style="margin-bottom:20px" rendered="#{exampaperView.currWrittenQuestion ne null}">
 
@@ -62,23 +63,21 @@
                                 <p:outputLabel value="Question :"/> 
                                 <p:outputLabel value="#{exampaperView.currWrittenQuestion.questionText}"/> 
                                 <p:outputLabel value="Answer :"/> 
-                                <p:inputTextarea value="" cols="156" rows="3"/>                                
+                                <p:inputTextarea value="#{exampaperView.currWrittenQuestion.answerText}" cols="156" rows="3"/>                                
 
                             </h:panelGrid>
                         </p:panel>
 
-                        <p:panel header="Question " style="margin-bottom:20px" rendered="#{exampaperView.currMultipleChoiceQuestion ne null}">
+                        <p:panel header="Question" style="margin-bottom:20px" rendered="#{exampaperView.currMultipleChoiceQuestion ne null}">
 
-                            <p:panelGrid columns="1" id="MultipleChoiceQuestionForm"  >
+                            <p:panelGrid columns="1" id="MultipleChoiceQuestionForm" >
 
 
-                                <p:inputText placeholder="Question" size="80" value="#{exampaperView.currMultipleChoiceQuestion.questionText}"></p:inputText>
-
-                                <p:inputText id="MarksMCQ" placeholder="Marks" value="#{exampaperView.currMultipleChoiceQuestion.mark}"/>  
+                                <p:outputLabel  value="#{exampaperView.currMultipleChoiceQuestion.questionText}"></p:outputLabel>
 
                                 <p:dataList value="#{exampaperView.currMultipleChoiceQuestion.options}" var="option">
+                                    <h:selectBooleanCheckbox value="#{exampaperView.currentQuestionchecked[option]}" />
                                     <p:outputLabel value="#{option}"/>
-                                    <p:inputText></p:inputText>
                                 </p:dataList>
 
 
@@ -93,45 +92,46 @@
                                 <p:dataTable value="#{exampaperView.currMultiPartQuestion.writtenAnswers}" var="mpw"  >
                                     <p:column>
                                         <f:facet name="header">
-                                        <p:outputLabel value="Question :"/> 
+                                            <p:outputLabel value="Question :"/> 
                                         </f:facet>
                                         <p:outputLabel value="#{mpw.questionText}"/> 
                                     </p:column>
                                     <p:column>
                                         <f:facet name="header">
-                                        <p:outputLabel value="Answer :"/> 
+                                            <p:outputLabel value="Answer :"/> 
                                         </f:facet>
-                                        <p:inputTextarea value="" cols="156" rows="3"/>                                
+                                        <p:inputTextarea value="#{mpw.answerText}" cols="156" rows="3"/>                                
                                     </p:column>
                                 </p:dataTable>
                             </p:panelGrid>
-                            
-                            
-                             <p:panelGrid>
-                                 <p:dataTable value="#{exampaperView.currMultiPartQuestion.multipleChoiceQuestions}" var="mpc"  >
+
+
+                            <p:panelGrid>
+                                <p:dataTable value="#{exampaperView.currMultiPartQuestion.multipleChoiceQuestions}" var="mpc"  >
                                     <p:column>
                                         <f:facet name="header">
-                                        <p:outputLabel value="Question :"/> 
+                                            <p:outputLabel value="Question:"/> 
                                         </f:facet>
                                         <p:outputLabel value="#{mpc.questionText}"/> 
                                     </p:column>
                                     <p:column>
                                         <f:facet name="header">
-                                            <p:dataGrid value="#{mpc.options}" var="Mpoption">
-                                                <p:outputLabel value="#{Mpoption.questionText}"></p:outputLabel>
-                                            </p:dataGrid>
+                                             <p:outputLabel value="options:"/> 
                                         </f:facet>
-                                        <p:inputTextarea value="" cols="156" rows="3"/>                                
+                                        <p:dataList value="#{mpc.options}" var="Mpoption">
+                                                <h:selectBooleanCheckbox value="#{exampaperView.currentQuestionchecked[Mpoption]}" />
+                                                <p:outputLabel value="#{Mpoption}"></p:outputLabel>
+                                            </p:dataList>
+                                                                  
                                     </p:column>
                                 </p:dataTable>
                             </p:panelGrid>
-                            
 
                         </p:panel>
 
 
                     </p:fieldset>
-
+                                            <p:commandButton value="End Exam" action="#{exampaperView.endExam()}"/>
                 </h:form>
                 <h:outputText value=""/>
                 <h:outputText value=""/>

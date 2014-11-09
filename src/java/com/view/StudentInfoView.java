@@ -10,18 +10,13 @@ import com.business.ModuleEjb;
 import com.business.StudentEjb;
 import com.business.UserControl;
 import com.entities.ExamPaper;
-import com.entities.ExamSession;
-import com.entities.Question;
 import com.entities.Student;
-import java.io.IOException;
 import java.io.Serializable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.UserTransaction;
@@ -48,6 +43,18 @@ public class StudentInfoView implements Serializable {
     private String confirmPassword;
     @Resource
     UserTransaction userTransaction;
+    
+    private String selectedModule;
+
+    public String getSelectedModule() {
+        return selectedModule;
+    }
+
+    public void setSelectedModule(String selectedModule) {
+        this.selectedModule = selectedModule;
+    }
+
+    
     
     private ExamPaper examPaper;
 
@@ -94,13 +101,20 @@ public class StudentInfoView implements Serializable {
         System.out.println("inside null");
 
         student = studentEjb.findStudent(userSessionBean.getUserName());
-
+         List<ExamPaper> unfinishedExams=new ArrayList<ExamPaper>();
+         
+         for(ExamPaper ep:student.getExamsEnrolled()){
+             if(ep.getCompleted()==0){
+                 unfinishedExams.add(ep);
+             }
+         }
+        student.setExamsEnrolled(unfinishedExams);
         System.out.println("Exam Size:" + student.getExamsEnrolled().size());
 
     }
 
     public String moduleNameforModuleId(int moduleId) {
-
+         selectedModule=moduleEjb.moduleNameforModuleId(moduleId);
         return moduleEjb.moduleNameforModuleId(moduleId);
     }
 

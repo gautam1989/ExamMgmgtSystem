@@ -44,6 +44,14 @@ public class ExamSession {
     private PdfAnswers pdfAnswers;
     
     private boolean currentRunningStatus;
+
+    public PdfAnswers getPdfAnswers() {
+        return pdfAnswers;
+    }
+
+    public void setPdfAnswers(PdfAnswers pdfAnswers) {
+        this.pdfAnswers = pdfAnswers;
+    }
     
     
     @OneToOne

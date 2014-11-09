@@ -30,14 +30,14 @@
 
 
                     <p:fieldset legend="Lecturer Information">
-                        <p:panelGrid columns="2">
+                        <p:panelGrid columns="3">
                             <p:outputLabel value="Name"/>
-                            <p:inputText value="#{lecturerUploadView.lecturer.name}" placeholder="Enter Name"/>
-
+                            <p:inputText value="#{lecturerUploadView.lecturer.name}" id="name" required="true" requiredMessage="Enter name" placeholder="Enter Name"/>
+                               <p:message for="name"/>
 
                             <p:outputLabel value="UserName"/>
-                            <p:inputText value="#{lecturerUploadView.lecturer.userName}" placeholder="Enter UserName"/>
-
+                            <p:inputText value="#{lecturerUploadView.lecturer.userName}" id="userName" required="true" requiredMessage="Enter ID" placeholder="Enter UserName"/>
+                            <p:message for="userName"/>
                             <p:outputLabel value="Select module for Lecturer"/>
                             <h:selectManyListbox value="#{lecturerUploadView.selectedModules}">
                                 <f:selectItems value="#{lecturerUploadView.modules}" var="module" itemLabel="#{module.moduleName}" itemValue="#{module.moduleId}"/>

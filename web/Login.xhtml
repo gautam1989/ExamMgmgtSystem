@@ -29,14 +29,15 @@
                 <h:form>
                     <div align="center">
                         <p:fieldset legend="Login" style="margin: 450px;margin-top:300px ;margin-left: 400px;alignment-adjust: central;text-align: center;padding:1em;margin-right:950px;" >    
-                            <p:panelGrid columns="2" style="text-align: center;width: 400px" >
+                            <p:panelGrid columns="3" style="text-align: center;width: 400px" >
 
 
-                                User Id: <p:inputText value="#{userSessionBean.userName}"></p:inputText>
-                                Password <p:inputText value="#{userSessionBean.password}"></p:inputText>
-                                
+                                User Id: <p:inputText id="username" value="#{userSessionBean.userName}" required="true" requiredMessage="User name required"></p:inputText>
+                                <p:message for="username"></p:message>
+                                Password <p:inputText id="password" value="#{userSessionBean.password}" required="true" requiredMessage="Password required"></p:inputText>
+                                <p:message for="password"></p:message>
                                 <p:column colspan="2">
-                                    <span></span><p:commandButton value="Login" action="#{userSessionBean.authenticate()}"></p:commandButton>
+                                    <span></span><p:commandButton value="Login" action="#{userSessionBean.authenticate()}" update="@form"></p:commandButton>
                                 </p:column>
 
                             </p:panelGrid>

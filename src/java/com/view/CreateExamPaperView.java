@@ -30,6 +30,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -619,6 +621,15 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public String createExamPaper() {
+        
+        FacesContext context=FacesContext.getCurrentInstance();
+        FacesMessage timeError=new FacesMessage("Check Date and Time Fields");
+       if((exameDateTime==null || endTime==null || startTime==null)||   (endTime.getTime() <= startTime.getTime()) ){
+           System.out.println("ERROR");
+           context.addMessage(null, timeError);
+           return null;
+       }
+        
 
         examPaper = new ExamPaper();
         examPaper.setCreatedDate(new java.sql.Date(System.currentTimeMillis()));

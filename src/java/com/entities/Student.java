@@ -38,7 +38,7 @@ public class Student {
     private String name;
     private String userName;
     
-    @OneToMany
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<ExamPaper> examsEnrolled;
     
     

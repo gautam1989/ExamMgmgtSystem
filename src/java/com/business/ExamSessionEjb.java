@@ -29,6 +29,7 @@ public class ExamSessionEjb {
     
     
     public List<ExamSession> allCurrentDateExams(){
+        System.out.println("ININININININININININININI");
         EntityManager em=entityManagerFactory.createEntityManager();
         List<ExamSession> exList=new ArrayList<ExamSession>();
          TypedQuery<ExamSession>  examSession=null;
@@ -41,6 +42,8 @@ public class ExamSessionEjb {
             e.printStackTrace();
         }finally{
             exList=examSession.getResultList();
+            if(exList.size()==0)
+                return null;
             em.flush();
           em.close();
           return exList;

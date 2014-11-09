@@ -5,18 +5,36 @@
  */
 package com.view;
 
+import com.business.ExamPaperEjb;
 import com.entities.ExamPaper;
+import com.entities.ExamSession;
 import com.entities.MultiPart;
 import com.entities.MultipleChoiceQuestion;
+import com.entities.PdfAnswers;
 import com.entities.Question;
 import com.entities.Section;
 import com.entities.WrittenQuestion;
 import java.io.Serializable;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.enterprise.context.Dependent;
 import javax.faces.bean.ManagedBean;
 
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSContext;
+import javax.jms.JMSProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.Queue;
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.UserTransaction;
 
 /**
  *
@@ -26,22 +44,79 @@ import javax.inject.Inject;
 @ViewScoped
 public class ExampaperView implements Serializable {
 
+   
+
+    @Resource(mappedName = "jms/connectionFactory")
+    private ConnectionFactory connectionFactory;
+    @Resource(mappedName = "jms/warehouseQueue")
+    private Queue warehouseQueue;
+
     private int timeRemaining = 10;
 
     @Inject
+    ExamPaperEjb examPaperEjb;
+
+    @Inject
     private StudentInfoView studentInfoView;
+
+    @Resource
+    private UserTransaction utx;
+
+    private PdfAnswers pdfAnswers;
+    private Map<String, List<String>> section;
+
+    public Map<String, List<String>> getSection() {
+        return section;
+    }
+
+    public void setSection(Map<String, List<String>> section) {
+        this.section = section;
+    }
+    private Map<String, List<String>> questionAndAnswer;
 
     private Section sectionA;
     private Section sectionB;
     private Section sectionC;
     private Section sectionD;
 
+    private String test;
+
     private WrittenQuestion currWrittenQuestion;
+
     private MultiPart currMultiPartQuestion;
     private MultipleChoiceQuestion currMultipleChoiceQuestion;
 
     private int currentCursor;
     private String currentSection;
+
+    private Question currentMultipartQuestion;
+    private String trackView;
+
+    public String getTrackView() {
+        return trackView;
+    }
+
+    public void setTrackView(String trackView) {
+        this.trackView = trackView;
+    }
+
+    public Question getCurrentMultipartQuestion() {
+        return currentMultipartQuestion;
+    }
+
+    public void setCurrentMultipartQuestion(Question currentMultipartQuestion) {
+        this.currentMultipartQuestion = currentMultipartQuestion;
+    }
+
+    private Map<String, Boolean> CurrentQuestionchecked = new HashMap<String, Boolean>();
+
+    public Map<String, Boolean> getCurrentQuestionchecked() {
+        return CurrentQuestionchecked;
+    }
+
+    public void setCurrentQuestionchecked(Map<String, Boolean> CurrentQuestionchecked) {
+        this.CurrentQuestionchecked = CurrentQuestionchecked;
+    }
 
     public String getCurrentSection() {
         return currentSection;
@@ -119,12 +194,23 @@ public class ExampaperView implements Serializable {
     @PostConstruct
     public void init() {
 
-        System.out.println("ININT:" + studentInfoView.getExamPaper().getExamPaperId());
-        System.out.println("ININT:" + studentInfoView.getExamPaper().getSections().size());
-
-        for (Section s : studentInfoView.getExamPaper().getSections()) {
-            System.out.println(s.getQuestions().size());
+        if (questionAndAnswer == null) {
+            questionAndAnswer = new HashMap<String, List<String>>();
         }
+
+        if (section == null) {
+            section = new HashMap<String, List<String>>();
+        }
+
+        if (currWrittenQuestion != null) {
+            currWrittenQuestion = new WrittenQuestion();
+        }
+
+        if (pdfAnswers == null) {
+            pdfAnswers = new PdfAnswers();
+        }
+
+       
 
     }
 
@@ -138,14 +224,15 @@ public class ExampaperView implements Serializable {
 
     public void decreaseCount() {
         timeRemaining = timeRemaining - 1;
-        System.out.println(timeRemaining);
 
     }
 
     public void startSectionA() {
+
         currWrittenQuestion = null;
         currMultiPartQuestion = null;
         currMultipleChoiceQuestion = null;
+        currentMultipartQuestion = null;
         currentSection = "A";
         sectionA = new Section();
         for (Section s : studentInfoView.getExamPaper().getSections()) {
@@ -154,8 +241,6 @@ public class ExampaperView implements Serializable {
                 sectionA = s;
             }
         }
-
-        System.out.println("SectionA:" + sectionA.getQuestions().size());
 
         if (sectionA.getQuestions().size() > 0) {
             if (setTypeOfQuestion(sectionA.getQuestions().get(0)).equals("WrittenQuestion")) {
@@ -176,6 +261,8 @@ public class ExampaperView implements Serializable {
     }
 
     public void startSectionB() {
+        currentMultipartQuestion = null;
+
         currWrittenQuestion = null;
         currMultiPartQuestion = null;
         currMultipleChoiceQuestion = null;
@@ -211,7 +298,17 @@ public class ExampaperView implements Serializable {
 
     }
 
+    public String getTest() {
+        return test;
+    }
+
+    public void setTest(String test) {
+        this.test = test;
+    }
+
     public void startSectionC() {
+        currentMultipartQuestion = null;
+
         currWrittenQuestion = null;
         currMultiPartQuestion = null;
         currMultipleChoiceQuestion = null;
@@ -236,6 +333,9 @@ public class ExampaperView implements Serializable {
             } else if (setTypeOfQuestion(sectionC.getQuestions().get(0)).equals("MultiPart")) {
                 MultiPart wq = (MultiPart) sectionC.getQuestions().get(0);
                 this.setCurrMultiPartQuestion(wq);
+
+                setMultipart();
+
                 currentCursor = 0;
             } else if (setTypeOfQuestion(sectionC.getQuestions().get(0)).equals("MultipleChoiceQuestion")) {
                 MultipleChoiceQuestion wq = (MultipleChoiceQuestion) sectionC.getQuestions().get(0);
@@ -246,7 +346,25 @@ public class ExampaperView implements Serializable {
 
     }
 
+    public void setMultipart() {
+
+        //  currentMultipartQuestion=new Question[currMultiPartQuestion.getMultipleChoiceQuestions().size()+currMultiPartQuestion.getWrittenAnswers().size()];
+        if (currMultiPartQuestion.getMultipleChoiceQuestions().size() > 0) {
+            currentMultipartQuestion = currMultiPartQuestion.getMultipleChoiceQuestions().get(0);
+            trackView = "MultipleChoiceQuestion";
+        } else if (currMultiPartQuestion.getWrittenAnswers().size() > 0) {
+            currentMultipartQuestion = currMultiPartQuestion.getWrittenAnswers().get(0);
+            trackView = "WrittenQuestion";
+        }
+    }
+
     public void startSectionD() {
+        currentMultipartQuestion = null;
+
+        currWrittenQuestion = null;
+        currMultiPartQuestion = null;
+        currMultipleChoiceQuestion = null;
+
         nextVal = true;
         currentSection = "D";
         sectionD = new Section();
@@ -292,6 +410,9 @@ public class ExampaperView implements Serializable {
     }
 
     public void nextSectionAQuestion() {
+
+        saveAnswer();
+
         if (currentSection.equalsIgnoreCase("A")) {
 
             currWrittenQuestion = null;
@@ -319,7 +440,7 @@ public class ExampaperView implements Serializable {
                     }
                 }
             } else {
-                System.out.println("false next");
+                //         System.out.println("false next");
                 nextVal = false;
                 currentSection = null;
             }
@@ -371,6 +492,7 @@ public class ExampaperView implements Serializable {
                     case "MultiPart": {
                         MultiPart wq = (MultiPart) sectionC.getQuestions().get(currentCursor);
                         this.setCurrMultiPartQuestion(wq);
+
                         break;
                     }
                     case "MultipleChoiceQuestion": {
@@ -380,7 +502,7 @@ public class ExampaperView implements Serializable {
                     }
                 }
             } else {
-                System.out.println("false next");
+                //      System.out.println("false next");
                 nextVal = false;
                 currentSection = null;
             }
@@ -410,11 +532,110 @@ public class ExampaperView implements Serializable {
                     }
                 }
             } else {
-                System.out.println("false next");
+                //        System.out.println("false next");
                 nextVal = false;
                 currentSection = null;
             }
         }
     }
 
+    public void saveAnswer() {
+
+        try {
+            //  System.out.println("save called");
+            if (currWrittenQuestion != null) {
+                System.out.println(currWrittenQuestion.getQuestionText());
+                System.out.println(currWrittenQuestion.getAnswerText());
+                List<String> ans = new ArrayList<String>();
+                ans.add(currWrittenQuestion.getAnswerText());
+//                System.out.println("ANS:" + ans);
+
+                questionAndAnswer.put(currWrittenQuestion.getQuestionText(), ans);
+                // System.out.println("QA:" + questionAndAnswer);
+            }
+            if (currMultipleChoiceQuestion != null) {
+                List<String> ans = new ArrayList<String>();
+
+                System.out.println("Q:" + currMultipleChoiceQuestion.getQuestionText());
+                System.out.println("c:" + CurrentQuestionchecked);
+                for (int i = 0; i < CurrentQuestionchecked.size(); i++) {
+                    if (CurrentQuestionchecked.get(currMultipleChoiceQuestion.getOptions().get(i))) {
+                        ans.add(currMultipleChoiceQuestion.getOptions().get(i));
+                        //        System.out.println("IN:" + currMultipleChoiceQuestion.getOptions().get(i));
+                    }
+                }
+                questionAndAnswer.put(currMultipleChoiceQuestion.getQuestionText(), ans);
+                //  System.out.println();
+
+            }
+            if (currMultiPartQuestion != null) {
+
+                if (currMultiPartQuestion.getWrittenAnswers().size() > 0) {
+                    List<String> ans = new ArrayList<String>();
+                    for (WrittenQuestion mpq : currMultiPartQuestion.getWrittenAnswers()) {
+
+                        System.out.println(mpq.getAnswerText());
+                        ans.add(mpq.getAnswerText());
+                    }
+
+                    questionAndAnswer.put(currMultiPartQuestion.getQuestionText(), ans);
+
+                }
+                if (currMultiPartQuestion.getMultipleChoiceQuestions().size() > 0) {
+                    List<String> ans = new ArrayList<String>();
+                    for (MultipleChoiceQuestion mp : currMultiPartQuestion.getMultipleChoiceQuestions()) {
+
+                        System.out.println("CQC:" + CurrentQuestionchecked);
+                        for (int i = 0; i < mp.getOptions().size(); i++) {
+                            if (CurrentQuestionchecked.get(mp.getOptions().get(i))) {
+
+                                ans.add(mp.getOptions().get(i));
+
+                            }
+                        }
+                        questionAndAnswer.put(mp.getQuestionText(), ans);
+
+                    }
+
+                }
+                //System.out.println("QQ:" + questionAndAnswer);
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void endExam() {
+        try {
+            utx.begin();
+            System.out.println("IN END EXAM:");
+            System.out.println(questionAndAnswer);
+            pdfAnswers.setQuestionAndAnswer(questionAndAnswer);
+            ExamSession examSession=new  ExamSession();
+            examSession.setCourseCode(examPaperEjb.findModuleWithName(studentInfoView.getSelectedModule()).getModuleId());
+            examSession.setCurrentRunningStatus(false);
+            examSession.setDate(new Date(new java.util.Date().getTime()));
+            examSession.setDuration(20);
+            System.out.println(examPaperEjb.findModuleWithName(studentInfoView.getSelectedModule()).getModuleName());
+
+            //es.setLocation(test);
+            //es.setStartTime(null);
+            // examPaperEjb.savePdfAnswers(pdfAnswers);
+            examSession.setPdfAnswers(pdfAnswers);
+            examSession.setInvigilator(examPaperEjb.findAdmin());
+            examSession.setStudent(studentInfoView.getStudent());
+            ExamPaper ep = examPaperEjb.startExamWithId(studentInfoView.getExamPaper().getExamPaperId());
+            ep.setCompleted(1);
+            examPaperEjb.saveExamPaper(ep);
+            examSession.setCurrentRunningStatus(true);
+            examPaperEjb.saveExamSession(examSession);
+            utx.commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }

@@ -17,7 +17,12 @@
                 User Info Not available
             </ui:define>
             <ui:define name="right">
-                No active Session
+               <h:form>
+                    <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
+                        <h:outputLabel value="#{userSessionBean.userName}" />
+                        <h:commandButton value="Logout" action="#{userSessionBean.logout()}" /> 
+                    </h:panelGrid>       
+                </h:form>
             </ui:define>
             <ui:define name="content">
                 <h:form>
@@ -42,13 +47,7 @@
                                     </f:facet>
                                     <p:outputLabel value="#{examsession.currentRunningStatus}"/>
                                 </p:column>
-                                <p:column>
-                                    <f:facet name="header">
-                                        <h:outputText value="Answered" />
-                                    </f:facet>
-                                    <p:outputLabel value=""/>
-                                </p:column>
-
+                               
 
                             </p:dataTable>
 

@@ -178,7 +178,7 @@ public class UserSessionBean implements Serializable {
             return "/faces/student/studentM.xhtml?faces-redirect=true";
         }else if(FacesContext.getCurrentInstance().getExternalContext().isUserInRole("lecturer")){
             System.out.println(">>>in lecturer");
-            return "/faces/lecturer/LectureMainPage.xhtml?faces-redirect=true";
+            return "/faces/lecturer/LectureM.xhtml?faces-redirect=true";
         }
         
 

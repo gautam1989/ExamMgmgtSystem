@@ -5,8 +5,11 @@
  */
 package com.entities;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,7 +22,7 @@ import javax.persistence.TableGenerator;
  * @author gautamverma
  */
 @Entity
-public class PdfAnswers {
+public class PdfAnswers implements Serializable{
     @TableGenerator(name="PDFANSWERS", table="SEQUENCE_TABLE", pkColumnName="SEQ_NAME",
         valueColumnName="SEQ_COUNT", pkColumnValue="PDFANSWERS_SEQ",allocationSize = 1)
     @GeneratedValue(strategy=GenerationType.TABLE, generator="PDFANSWERS")

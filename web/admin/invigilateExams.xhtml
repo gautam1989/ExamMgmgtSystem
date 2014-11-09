@@ -17,13 +17,18 @@
                 User Info Not available
             </ui:define>
             <ui:define name="right">
-                No active Session
+                <h:form>
+                    <h:panelGrid columns="1" rendered="#{(request.isUserInRole('student'))or(request.isUserInRole('admin'))or(request.isUserInRole('lecturer'))}">
+                        <h:outputLabel value="#{userSessionBean.userName}" />
+                        <h:commandButton value="Logout" action="#{userSessionBean.logout()}" /> 
+                    </h:panelGrid>       
+                </h:form>
             </ui:define>
             <ui:define name="content">
                 <h:form>
                     <p:commandButton value="refresh" action="#{invigilateExamView.reset()}" update="@form"/>
-                   <p:commandButton action="#{invigilateExamView.resettest()}" value="RS"/>
-   <p:poll listener="#{invigilateExamView.reset()}" interval="2" update="@form" />
+                    <p:commandButton action="#{invigilateExamView.resettest()}" value="RS"/>
+                    <p:poll listener="#{invigilateExamView.reset()}" interval="2" update="@form" />
                     <p:fieldset legend="Exam Details">
                         <!--<center><h3>Examination : </h3></center>
                         <h3>Date :</h3> <h3>Invigilator :</h3>-->

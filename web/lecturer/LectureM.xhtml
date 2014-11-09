@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Login</title>
+        <f:view renderKitId="PRIMEFACES_MOBILE"/>
+    </h:head>
+    <h:body>
+        <pm:header title="Exam Details" swatch="b" fixed="true">
+           
+        </pm:header>
+        <h:form id="form">
+    <p:growl id="msgs" showDetail="true" />                
+ 
+    <h2 class="first">On going Examinations</h2>
+    <p:dataTable var="exam" value="#{lectureMobile.examSession}" tableStyleClass="ui-table-columntoggle">
+        <p:column headerText="Examinee">
+            <h:outputText value="#{exam.student.name}" />
+        </p:column>
+ 
+        <p:column headerText="Modules" >
+            <p:dataTable value="#{exam.student.examsEnrolled}" var="modules">
+                <h:outputText value="#{modules.moduleName}"/>
+            </p:dataTable>
+        </p:column>
+ 
+        <p:column headerText="Exam Date" >
+            <h:outputText value="#{exam.date}" />
+        </p:column>
+ 
+        
+    
+    </p:dataTable>
+ 
+</h:form>
+    </h:body>
+</html>

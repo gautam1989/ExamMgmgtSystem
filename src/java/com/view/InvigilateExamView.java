@@ -22,14 +22,11 @@ import org.primefaces.push.EventBusFactory;
  */
 @Named
 @ViewScoped
-public class InvigilateExamView  implements Serializable{
-    
-    @EJB ExamSessionEjb examSessionEjb;
-    private List<ExamSession> examSession;
+public class InvigilateExamView implements Serializable {
 
-   
-    
- 
+    @EJB
+    ExamSessionEjb examSessionEjb;
+    private List<ExamSession> examSession;
 
     public List<ExamSession> getExamSession() {
         return examSession;
@@ -38,31 +35,26 @@ public class InvigilateExamView  implements Serializable{
     public void setExamSession(List<ExamSession> examSession) {
         this.examSession = examSession;
     }
-    
-       @PostConstruct
-    public void init()
-    {
-        
-          examSession=examSessionEjb.allCurrentDateExams();
-        System.out.println("examsession"+examSession.get(0).getSessionId());
-       System.out.println(examSession.get(0).getStudent().getName());
-      System.out.println(examSession.get(0).getInvigilator().getName());
+
+    @PostConstruct
+    public void init() {
+
+        examSession = examSessionEjb.allCurrentDateExams();
+//        System.out.println("examsession" + examSession.get(0).getSessionId());
+//        System.out.println(examSession.get(0).getStudent().getName());
+//        System.out.println(examSession.get(0).getInvigilator().getName());
     }
-    
-    
-    public void reset()
-    {
+
+    public void reset() {
         System.out.println("reset");
-     
-        examSession=examSessionEjb.allCurrentDateExams();
+
+        examSession = examSessionEjb.allCurrentDateExams();
         System.out.println(examSession.get(0).isCurrentRunningStatus());
     }
-    
-    
-    public void resettest()
-    {
+
+    public void resettest() {
         examSession.get(0).setCurrentRunningStatus(true);
         examSessionEjb.saveTest(examSession.get(0));
     }
-    
+
 }

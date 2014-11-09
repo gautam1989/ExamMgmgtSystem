@@ -41,7 +41,7 @@
                         </h:panelGrid>
                     </p:fieldset>
                     <p:fieldset legend="Enrolled Exam Details">
-                        <p:dataTable var="exam" value="#{studentInfoView.student.examsEnrolled}">
+                        <p:dataTable var="exam" value="#{studentInfoView.student.examsEnrolled}" >
                             <p:column headerText="Exam Id">
                                 <h:outputText value="#{exam.examPaperId}" />
                             </p:column>

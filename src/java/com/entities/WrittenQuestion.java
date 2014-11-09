@@ -5,6 +5,7 @@
  */
 package com.entities;
 
+import javax.inject.Named;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
@@ -13,6 +14,7 @@ import javax.persistence.ManyToOne;
  * @author gautamverma
  */
 @Entity
+@Named
 public class WrittenQuestion extends Question{
     
     private String answerText;

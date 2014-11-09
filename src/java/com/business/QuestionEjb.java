@@ -92,32 +92,33 @@ public class QuestionEjb {
         List<Question> allQuestions=new ArrayList<Question>();
         List<Question> questionsToReturn=new ArrayList<Question>();
         allQuestions=questions.getResultList();
+        System.out.println("ALLQ:"+allQuestions);
        // Question[] allQues=(Question[])allQuestions.toArray();
        
-       int var=0;
-        for(Question q:allQuestions){
-            if(questionsToReturn.size()!=0){
-                for(Question q2:questionsToReturn){
-                    if(q2.getQuestionId()==q.getQuestionId()){
-                        var=1;
-                    }
-                }
-                if(var==0){questionsToReturn.add(q);}
-                var=0;
-            }else{
-                questionsToReturn.add(q);
-            }
-        }
-        
-        Tmarks=new int[(int)Math.pow(questionsToReturn.size(),questionsToReturn.size())];
-        qArr=new Question[(int)Math.pow(questionsToReturn.size(),questionsToReturn.size())];
-        System.out.println("Tmarks:"+Tmarks);
-      findAllCombinations(questionsToReturn,0,marks);
-        System.out.println("Print all comb:");
-        for(int r:Tmarks){
-            System.out.print(r);
-            System.out.println("");
-        }
+//       int var=0;
+//        for(Question q:allQuestions){
+//            if(questionsToReturn.size()!=0){
+//                for(Question q2:questionsToReturn){
+//                    if(q2.getQuestionId()==q.getQuestionId()){
+//                        var=1;
+//                    }
+//                }
+//                if(var==0){questionsToReturn.add(q);}
+//                var=0;
+//            }else{
+//                questionsToReturn.add(q);
+//            }
+//        }
+//        
+//        Tmarks=new int[(int)Math.pow(questionsToReturn.size(),questionsToReturn.size())];
+//        qArr=new Question[(int)Math.pow(questionsToReturn.size(),questionsToReturn.size())];
+//        System.out.println("Tmarks:"+Tmarks);
+//      findAllCombinations(questionsToReturn,0,marks);
+//        System.out.println("Print all comb:");
+//        for(int r:Tmarks){
+//            System.out.print(r);
+//            System.out.println("");
+//        }
         return questionsToReturn;
 
     }

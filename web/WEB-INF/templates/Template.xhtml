@@ -44,6 +44,7 @@
                         <p:menuitem value="Student upload" rendered="#{request.isUserInRole('admin')}" url="studentInfoUpload.xhtml" />
                         <p:menuitem value="lecturer upload" rendered="#{request.isUserInRole('admin')}" url="lecturerInfoUpload.xhtml"/>
                         <p:menuitem value="Add Subject tags" rendered="#{request.isUserInRole('admin')}" url="SubjectInfoUpload.xhtml"/>
+                        <p:menuitem value="GEnerate Pdf" rendered="#{request.isUserInRole('lecturer')}" url="pdfGeneratePage.xhtml"/>
 
                     </p:menu>
                 </h:form>

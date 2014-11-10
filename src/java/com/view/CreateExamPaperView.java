@@ -568,11 +568,12 @@ public class CreateExamPaperView implements Serializable {
     }
 
     public void deleteQuestionSectionA() {
-
+        System.out.println("CHK"+checkedA);
         if (SectionAQuestion != null) {
             for (int i = 0; i < SectionAQuestion.size(); i++) {
                 Question q = (Question) SectionAQuestion.get(i);
-                if (checkedA.get(q.getQuestionId())) {
+                   
+                if (   checkedA.get(q.getQuestionId())!=null && checkedA.get(q.getQuestionId())) {
                     SectionAQuestion.remove(q);
                     i = i - 1;
                 }
@@ -699,8 +700,10 @@ public class CreateExamPaperView implements Serializable {
         }
 
         examPaper.setSections(allSections);
+        try{
         examPaperEjb.saveExamPaper(examPaper);
-        return "null";
+        }catch(Exception e){return "error.xhtml";}
+        return "LectureMainPage.xhtml";
     }
 
     public void examPapers() {
@@ -714,6 +717,7 @@ public class CreateExamPaperView implements Serializable {
             System.out.println(selectedSubjectTagValA.length);
             if (selectedSubjectTagValA.length != 0) {
                 SectionAQuestion = questionEjb.findAllQuestionsForSubjectTag(selectedSubjectTagValA, marks);
+                System.out.println("SEC QUES:"+SectionAQuestion);
             }
         } else if (section.trim().equalsIgnoreCase("B")) {
 

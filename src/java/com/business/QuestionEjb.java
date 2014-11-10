@@ -119,7 +119,7 @@ public class QuestionEjb {
 //            System.out.print(r);
 //            System.out.println("");
 //        }
-        return questionsToReturn;
+        return allQuestions;
 
     }
     

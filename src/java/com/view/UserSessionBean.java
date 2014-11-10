@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -133,6 +134,8 @@ public class UserSessionBean implements Serializable {
         FacesContext fc = FacesContext.getCurrentInstance();
         HttpServletRequest req = (HttpServletRequest) fc.getExternalContext().getRequest();
         req.logout();
+            HttpSession session=req.getSession();
+            session.invalidate();
         return "/faces/Login.xhtml";
         }catch(Exception e){
             return "./Login.xtml";

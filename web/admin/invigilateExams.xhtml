@@ -26,8 +26,8 @@
             </ui:define>
             <ui:define name="content">
                 <h:form>
-                    <p:commandButton value="refresh" action="#{invigilateExamView.reset()}" update="@form"/>
-                    <p:commandButton action="#{invigilateExamView.resettest()}" value="RS"/>
+<!--                    <p:commandButton value="refresh" action="#{invigilateExamView.reset()}" update="@form"/>
+                    <p:commandButton action="#{invigilateExamView.resettest()}" value="RS"/>-->
                     <p:poll listener="#{invigilateExamView.reset()}" interval="2" update="@form" />
                     <p:fieldset legend="Exam Details">
                         <!--<center><h3>Examination : </h3></center>

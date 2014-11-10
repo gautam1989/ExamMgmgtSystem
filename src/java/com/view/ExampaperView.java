@@ -22,19 +22,14 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.enterprise.context.Dependent;
 import javax.faces.bean.ManagedBean;
 
 import javax.faces.bean.ViewScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSContext;
-import javax.jms.JMSProducer;
-import javax.jms.ObjectMessage;
-import javax.jms.Queue;
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.UserTransaction;
+import org.primefaces.context.RequestContext;
+import org.primefaces.push.EventBus;
+import org.primefaces.push.EventBusFactory;
 
 /**
  *
@@ -44,21 +39,46 @@ import javax.transaction.UserTransaction;
 @ViewScoped
 public class ExampaperView implements Serializable {
 
-   
-
-    @Resource(mappedName = "jms/connectionFactory")
-    private ConnectionFactory connectionFactory;
-    @Resource(mappedName = "jms/warehouseQueue")
-    private Queue warehouseQueue;
-
     private int timeRemaining = 10;
 
+    @Inject ChatRoom chatRoom;
+
+    public ChatRoom getChatRoom() {
+        return chatRoom;
+    }
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
+    }
+    
+    private String chatMessages;
+    private String sendMessageText;
+
+    public String getChatMessages() {
+        return chatMessages;
+    }
+
+    public void setChatMessages(String chatMessages) {
+        this.chatMessages = chatMessages;
+    }
+
+    public String getSendMessageText() {
+        return sendMessageText;
+    }
+
+    public void setSendMessageText(String sendMessageText) {
+        this.sendMessageText = sendMessageText;
+    }
+    
     @Inject
     ExamPaperEjb examPaperEjb;
 
     @Inject
     private StudentInfoView studentInfoView;
 
+    @Inject
+    private UserSessionBean userSessionBean;
+    
     @Resource
     private UserTransaction utx;
 
@@ -91,6 +111,15 @@ public class ExampaperView implements Serializable {
 
     private Question currentMultipartQuestion;
     private String trackView;
+    private int duration;
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 
     public String getTrackView() {
         return trackView;
@@ -210,7 +239,14 @@ public class ExampaperView implements Serializable {
             pdfAnswers = new PdfAnswers();
         }
 
-       
+        System.out.println("duration:" + studentInfoView.getExamPaper().getExamDuration());
+        String t = studentInfoView.getExamPaper().getExamDuration().toString();
+        int hours = Integer.parseInt(t.split(":")[0]);
+        int minutes = Integer.parseInt(t.split(":")[1]);
+        int seconds = Integer.parseInt(t.split(":")[2]);
+
+        duration = (hours * 60) + minutes + (seconds / 60);
+        System.out.println("duration:"+duration);
 
     }
 
@@ -223,10 +259,25 @@ public class ExampaperView implements Serializable {
     }
 
     public void decreaseCount() {
-        timeRemaining = timeRemaining - 1;
+        duration = duration - 1;
+        if (duration == 0) {
+            RequestContext.getCurrentInstance().execute("PF('confirmDialogWidgetVar').show()");
 
+        }
     }
 
+    
+    public void sendMessage()
+    {
+       System.out.println("Send called>>>>>>>");
+  
+       chatRoom.add(sendMessageText);
+         EventBus bus=EventBusFactory.getDefault().eventBus();
+        bus.publish("/testChannel", "kjklj");
+        sendMessageText="";
+        
+    }
+    
     public void startSectionA() {
 
         currWrittenQuestion = null;
@@ -607,13 +658,14 @@ public class ExampaperView implements Serializable {
         }
     }
 
-    public void endExam() {
+    public String endExam() {
         try {
+
             utx.begin();
             System.out.println("IN END EXAM:");
             System.out.println(questionAndAnswer);
             pdfAnswers.setQuestionAndAnswer(questionAndAnswer);
-            ExamSession examSession=new  ExamSession();
+            ExamSession examSession = new ExamSession();
             examSession.setCourseCode(examPaperEjb.findModuleWithName(studentInfoView.getSelectedModule()).getModuleId());
             examSession.setCurrentRunningStatus(false);
             examSession.setDate(new Date(new java.util.Date().getTime()));
@@ -632,10 +684,13 @@ public class ExampaperView implements Serializable {
             examSession.setCurrentRunningStatus(true);
             examPaperEjb.saveExamSession(examSession);
             utx.commit();
-
+             studentInfoView.fillStudentInfo();
         } catch (Exception e) {
+
             e.printStackTrace();
+            return "/faces/error.xhtml";
         }
+        return "student.xhtml";
 
     }
 }

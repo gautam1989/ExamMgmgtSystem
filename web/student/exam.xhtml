@@ -26,7 +26,16 @@
             </ui:define>
             <ui:define name="content">
                 <h:form id="examForm">
-
+                    <p:fieldset legend="chat to lecturer">
+                        <h:panelGrid columns="1">
+                            <p:inputTextarea rows="5" cols="7" disabled="true" id="chatArea" value="#{exampaperView.chatRoom.chat}"></p:inputTextarea>
+                            <p:inputText value="#{exampaperView.sendMessageText}" id="inputChat"/>
+                            <p:commandButton value="Send" action="#{exampaperView.sendMessage()}" process="@form" update="@form"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:socket channel="/testChannel">
+                        <p:ajax event="message" update=":examForm:chatArea"/>
+                    </p:socket>
                     <p:fieldset legend="Exam Details">
                         <h:panelGrid columns="3" cellpadding="5">
                             <p:outputLabel value="Sections"/> 
@@ -34,6 +43,7 @@
                             <p:outputLabel value="Answers" />
                             <p:outputLabel value="Section A "/> 
                             <p:outputLabel value="10" />
+
                             <p:commandButton value="Start Section A" action="#{exampaperView.startSectionA()}" update="examForm :sectionForm:questionField"></p:commandButton>
                             <p:outputLabel value="Section B"/> 
                             <p:outputLabel value="10" />
@@ -46,14 +56,18 @@
                             <p:commandButton value="Start Section D" action="#{exampaperView.startSectionD()}" update="examForm :sectionForm:questionField"></p:commandButton>
                             <p:outputLabel value="Time Remained:"/>
 
-                            <h:outputLabel value="#{exampaperView.timeRemaining}" id="txt"/>
-<!--                            <p:poll listener="#{exampaperView.decreaseCount()}" interval="1" update="txt"/>-->
+                            <h:outputLabel value="#{exampaperView.duration} minutes remaining" id="txt"/>
+                            <p:poll listener="#{exampaperView.decreaseCount()}" interval="1" update="txt"/>
 
                         </h:panelGrid>
+                        <p:confirmDialog id="confirmDialog" widgetVar="confirmDialogWidgetVar"   message="Time Expired..CLick to continue">`
+                            <p:commandButton value="YES" oncomplete="confirmDialogWidgetVar.hide()" action="#{exampaperView.endExam()}"/>
+
+                        </p:confirmDialog>
                     </p:fieldset>
                 </h:form>
                 <h:form id="sectionForm">
-                                            <div align="right"> <p:commandButton id="nextButton" value="Next" action="#{exampaperView.nextSectionAQuestion()}" rendered="#{exampaperView.nextVal}" update=":sectionForm:questionField"/> </div>
+                    <div align="right"> <p:commandButton id="nextButton" value="Next" action="#{exampaperView.nextSectionAQuestion()}" rendered="#{exampaperView.nextVal}" update=":sectionForm:questionField"/> </div>
 
                     <p:fieldset legend="Section" id="questionField">
 
@@ -116,13 +130,13 @@
                                     </p:column>
                                     <p:column>
                                         <f:facet name="header">
-                                             <p:outputLabel value="options:"/> 
+                                            <p:outputLabel value="options:"/> 
                                         </f:facet>
                                         <p:dataList value="#{mpc.options}" var="Mpoption">
-                                                <h:selectBooleanCheckbox value="#{exampaperView.currentQuestionchecked[Mpoption]}" />
-                                                <p:outputLabel value="#{Mpoption}"></p:outputLabel>
-                                            </p:dataList>
-                                                                  
+                                            <h:selectBooleanCheckbox value="#{exampaperView.currentQuestionchecked[Mpoption]}" />
+                                            <p:outputLabel value="#{Mpoption}"></p:outputLabel>
+                                        </p:dataList>
+
                                     </p:column>
                                 </p:dataTable>
                             </p:panelGrid>
@@ -131,7 +145,11 @@
 
 
                     </p:fieldset>
-                                            <p:commandButton value="End Exam" action="#{exampaperView.endExam()}"/>
+                    <p:commandButton value="End Exam" action="#{exampaperView.endExam()}"/>
+
+
+
+
                 </h:form>
                 <h:outputText value=""/>
                 <h:outputText value=""/>

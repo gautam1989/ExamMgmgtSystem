@@ -29,7 +29,6 @@ public class ExamSessionEjb {
     
     
     public List<ExamSession> allCurrentDateExams(){
-        System.out.println("ININININININININININININI");
         EntityManager em=entityManagerFactory.createEntityManager();
         List<ExamSession> exList=new ArrayList<ExamSession>();
          TypedQuery<ExamSession>  examSession=null;
@@ -37,6 +36,29 @@ public class ExamSessionEjb {
         
        examSession=em.createQuery("select m from ExamSession m where m.date =:date", ExamSession.class);
         examSession.setParameter("date",new Date());
+       List<ExamSession> ex=examSession.getResultList();
+        }catch(Exception e){
+            e.printStackTrace();
+        }finally{
+            exList=examSession.getResultList();
+            if(exList.size()==0)
+                return null;
+            em.flush();
+          em.close();
+          return exList;
+        }
+    }
+    
+    
+    public List<ExamSession>  getAllExamSessions()
+    {
+         EntityManager em=entityManagerFactory.createEntityManager();
+        List<ExamSession> exList=new ArrayList<ExamSession>();
+         TypedQuery<ExamSession>  examSession=null;
+        try{
+        
+       examSession=em.createQuery("select m from ExamSession m", ExamSession.class);
+        
        List<ExamSession> ex=examSession.getResultList();
         }catch(Exception e){
             e.printStackTrace();

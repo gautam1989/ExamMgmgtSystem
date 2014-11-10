@@ -28,9 +28,9 @@
                 <h:form id="examForm">
                     <p:fieldset legend="chat to lecturer">
                         <h:panelGrid columns="1">
-                            <p:inputTextarea rows="5" cols="7" disabled="true" id="chatArea" value="#{exampaperView.chatRoom.chat}"></p:inputTextarea>
-                            <p:inputText value="#{exampaperView.sendMessageText}" id="inputChat"/>
-                            <p:commandButton value="Send" action="#{exampaperView.sendMessage()}" process="@form" update="@form"/>
+                            <p:inputTextarea rows="5" cols="7" disabled="true" id="chatArea" value="#{chatRoom.chat}"></p:inputTextarea>
+                            <p:inputText value="#{chatView.message}" id="inputChat"/>
+                            <p:commandButton value="Send" action="#{chatView.send()}" process="@form" update="@form"/>
                         </h:panelGrid>
                     </p:fieldset>
                     <p:socket channel="/testChannel">

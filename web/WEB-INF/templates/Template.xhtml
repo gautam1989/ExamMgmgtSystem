@@ -45,14 +45,14 @@
                         <p:menuitem value="lecturer upload" rendered="#{request.isUserInRole('admin')}" url="lecturerInfoUpload.xhtml"/>
                         <p:menuitem value="Add Subject tags" rendered="#{request.isUserInRole('admin')}" url="SubjectInfoUpload.xhtml"/>
                         <p:menuitem value="GEnerate Pdf" rendered="#{request.isUserInRole('lecturer')}" url="pdfGeneratePage.xhtml"/>
-
+                        <p:menuitem value="See All Chats" rendered="#{request.isUserInRole('lecturer')}" url="lecturerChat.xhtml"/>
                     </p:menu>
                 </h:form>
             </div>
             <div>
                 <div id="right">
                     <ui:insert name="right">
-                        
+
                     </ui:insert>
                 </div>
                 <div id="content" class="right_content">

@@ -49,7 +49,7 @@ public class UserControl {
             preparedStatement.setString(1, student.getUserName());
 
             preparedStatement.executeUpdate();
-
+            saveStudentInGroup(student);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -81,6 +81,32 @@ public class UserControl {
 
     }
 
+    
+    
+    private boolean saveStudentInGroup(Student student)
+    {
+        try {
+
+            Class.forName("com.mysql.jdbc.Driver");
+            connect = DriverManager.getConnection("jdbc:mysql://localhost/ExamMgmtSystem?"
+                    + "user=root&password=root");
+
+            statement = connect.createStatement();
+
+            preparedStatement = connect
+                    .prepareStatement("insert into users_groups(groupid,userid) values(?,?)");
+
+            preparedStatement.setString(1, "student");
+            preparedStatement.setString(2, student.getUserName());
+
+            preparedStatement.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+        
+    }
+    
     
     private boolean saveLecturerInGroup(Lecturer lecturer)
     {

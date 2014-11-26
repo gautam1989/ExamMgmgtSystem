@@ -148,7 +148,8 @@ public class ExamPaperEjb {
     public void saveExamSession(ExamSession examSession){
         try{
         em.merge(examSession);
-        em.clear();
+            System.out.println("merged saved");
+        
         }catch(Exception e){
             e.printStackTrace();
         }
